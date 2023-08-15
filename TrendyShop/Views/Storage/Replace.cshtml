@@ -1,0 +1,49 @@
+﻿@model TrendyShop.ViewModels.ReplaceViewModel
+
+@{
+    ViewData["Title"] = "Replace";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-lg-7 mx-auto">
+    <div class="card">
+        <div class="card-header">Mover de @Model.SourceName a @Model.DestinationName</div>
+        <div class="card-body">
+            <form asp-action="SaveReplace" asp-controller="Storage">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Costo</th>
+                        <th>En @Model.SourceName</th>
+                        <th>En @Model.DestinationName</th>
+                        <th>
+                            Transferir
+                            <button class="ml-5" type="submit">Mover</button>
+                        </th>
+                    </tr>
+                    @for (int i = 0; i < Model.AmountToMove.Length; i++)
+                    {
+                        <tr>
+                            <td>@Model.ProductsInSource[i].Name</td>
+                            <td class="text-right">@Model.ProductsInSource[i].Cost $</td>
+                            <td class="text-right">@Model.Source[i]</td>
+                            <td class="text-right">@Model.Destination[i]</td>
+                            <td class="text-right"> <input asp-for="AmountToMove[i]" type="number" id="amount"></td>
+                        </tr>
+                        @Html.HiddenFor(rvm => rvm.ProductsInSource[i].Name)
+                        @Html.HiddenFor(rvm => rvm.ProductsInSource[i].Cost)
+                    }
+                </table>
+                @Html.HiddenFor(rvm => rvm.SourceId)
+                @Html.HiddenFor(rvm => rvm.DestinationId)
+
+            </form>
+        </div>
+        <div class="card-footer">
+            <button onclick="location.pathname = 'Room'">Listo</button>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("amount").select();
+</script>

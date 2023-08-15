@@ -1,0 +1,347 @@
+﻿
+@{
+    ViewData["Title"] = "InfromeTecnico";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<body>
+    <h1>Informe Tecnico</h1>
+    <h4 style="margin-left:auto; margin-right:auto">Tabla:Customer</h4>
+    <table class="table-striped" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Nombre(Columna)</th>
+            <th>Tipo</th>
+            <th>Datos Adicionales</th>
+        </tr>
+        <tr>
+            <td>CustomerId</td>
+            <td>String</td>
+            <td>primary_key = True</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>String</td>
+            <td>Nullable = True</td>
+        </tr>
+        <tr>
+            <td>Phone</td>
+            <td>Integer</td>
+            <td>Nullable = True</td>
+        </tr>
+        <tr>
+            <td>IsBlocked</td>
+            <td>bit</td>
+            <td>Nullable= True</td>
+        </tr>
+        <tr>
+            <td>LastEntrance</td>
+            <td>DateTime</td>
+            <td>Nullable = True</td>
+        </tr>
+    </table>
+    <br />
+
+    <h4 style="margin-left:auto; margin-right:auto">Tabla:Employee</h4>
+    <table class="table-striped" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Nombre(Columna)</th>
+            <th>Tipo</th>
+            <th>Datos Adicionales</th>
+        </tr>
+        <tr>
+            <td>EmployeeId</td>
+            <td>String</td>
+            <td>primary_key = True</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>String(MAX)</td>
+            <td>Nullable = False</td>
+        </tr>
+        <tr>
+            <td>Phone</td>
+            <td>Integer</td>
+            <td>Nullable = True</td>
+        </tr>
+        <tr>
+            <td>LastPayment</td>
+            <td>DateTime</td>
+            <td>Nullable= False</td>
+        </tr>
+        <tr>
+            <td>PendingPayment</td>
+            <td>Float</td>
+            <td>Nullable = False</td>
+        </tr>
+        <tr>
+            <td>DefaultSalary</td>
+            <td>Integer</td>
+            <td>Nullable = False</td>
+        </tr>
+    </table>
+    <br />
+
+    <h4 style="margin-left:auto; margin-right:auto">Tabla:ExpendableProduct</h4>
+    <table class="table-striped" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Nombre(Columna)</th>
+            <th>Tipo</th>
+            <th>Datos Adicionales</th>
+        </tr>
+        <tr>
+            <td>Cost</td>
+            <td>Float</td>
+            <td>primary_key = True</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>String</td>
+            <td>primary_key = True</td>
+        </tr>
+    </table>
+    <br />
+
+    <h4 style="margin-left:auto; margin-right:auto">Tabla:GastronomicProduct</h4>
+    <table class="table-striped" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Nombre(Columna)</th>
+            <th>Tipo</th>
+            <th>Datos Adicionales</th>
+        </tr>
+        <tr>
+            <td>Cost</td>
+            <td>Float</td>
+            <td>primary_key = True</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>String</td>
+            <td>primary_key = True</td>
+        </tr>
+        <tr>
+            <td>Price</td>
+            <td>Float</td>
+            <td>Nullable = False</td>
+        </tr>
+    </table>
+    <br />
+
+    <h4 style="margin-left:auto; margin-right:auto">Tabla:Incidences</h4>
+    <table class="table-striped" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Nombre(Columna)</th>
+            <th>Tipo</th>
+            <th>Datos Adicionales</th>
+        </tr>
+        <tr>
+            <td>IncidenceId</td>
+            <td>Integer</td>
+            <td>primary_key = True</td>
+        </tr>
+        <tr>
+            <td>Subject</td>
+            <td>String</td>
+            <td>Nullable = False</td>
+        </tr>
+        <tr>
+            <td>Price</td>
+            <td>Float</td>
+            <td>Nullable = False</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>String</td>
+            <td>Nullable = True</td>
+        </tr>
+    </table>
+    <br />
+
+    <h4 style="margin-left:auto; margin-right:auto">Tabla:Lodgings</h4>
+    <table class="table-striped" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Nombre(Columna)</th>
+            <th>Tipo</th>
+            <th>Datos Adicionales</th>
+        </tr>
+        <tr>
+            <td>RoomId</td>
+            <td>Integer</td>
+            <td>primary_key/foreign_key = True</td>
+        </tr>
+        <tr>
+            <td>CustomerId</td>
+            <td>String</td>
+            <td>foreign_key = True</td>
+        </tr>
+        <tr>
+            <td>StartDate</td>
+            <td>DateTime</td>
+            <td>primary_key = True</td>
+        </tr>
+        <tr>
+            <td>EndDate</td>
+            <td>DateTime</td>
+            <td>Nullable = False</td>
+        </tr>
+        <tr>
+            <td>ExtraCharge</td>
+            <td>Float</td>
+            <td>Nullable = True</td>
+        </tr>
+        <tr>
+            <td>ToatalPrice</td>
+            <td>Float</td>
+            <td>Nullable = False</td>
+        </tr>
+        <tr>
+            <td>Prepaid</td>
+            <td>Float</td>
+            <td>Nullable = True</td>
+        </tr>
+    </table>
+    <br />
+
+    <h4 style="margin-left:auto; margin-right:auto">Tabla:Maintenance</h4>
+    <table class="table-striped" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Nombre(Columna)</th>
+            <th>Tipo</th>
+            <th>Datos Adicionales</th>
+        </tr>
+        <tr>
+            <td>MaintenanceId</td>
+            <td>Integer</td>
+            <td>primary_key = True</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>String</td>
+            <td>Nullable = False</td>
+        </tr>
+        <tr>
+            <td>Date</td>
+            <td>DateTime</td>
+            <td>Nullable = False</td>
+        </tr>
+        <tr>
+            <td>Cost</td>
+            <td>Float</td>
+            <td>Nullable = False</td>
+        </tr>
+    </table>
+    <br />
+
+    <h4 style="margin-left:auto; margin-right:auto">Tabla:Reservations</h4>
+    <table class="table-striped" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Nombre(Columna)</th>
+            <th>Tipo</th>
+            <th>Datos Adicionales</th>
+        </tr>
+        <tr>
+            <td>RoomId</td>
+            <td>Integer</td>
+            <td>primary_key/foreign_key = True</td>
+        </tr>
+        <tr>
+            <td>Customer</td>
+            <td>String</td>
+            <td>Nullable = False</td>
+        </tr>
+        <tr>
+            <td>Date</td>
+            <td>DateTime</td>
+            <td>primary_key = True</td>
+        </tr>
+        <tr>
+            <td>StandardPrice</td>
+            <td>Float</td>
+            <td>Nullable = False</td>
+        </tr>
+        <tr>
+            <td>IsRomantic</td>
+            <td>Bit</td>
+            <td>Nullable = False</td>
+        </tr>
+        <tr>
+            <td>Companion</td>
+            <td>Integer</td>
+            <td>Nullable = False</td>
+        </tr>
+    </table>
+    <br />
+
+    <h4 style="margin-left:auto; margin-right:auto">Tabla:Rooms</h4>
+    <table class="table-striped" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Nombre(Columna)</th>
+            <th>Tipo</th>
+            <th>Datos Adicionales</th>
+        </tr>
+        <tr>
+            <td>RoomId</td>
+            <td>Integer</td>
+            <td>primary_key = True</td>
+        </tr>
+    </table>
+    <br />
+
+    <h4 style="margin-left:auto; margin-right:auto">Tabla:RoomProduct</h4>
+    <table class="table-striped" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Nombre(Columna)</th>
+            <th>Tipo</th>
+            <th>Datos Adicionales</th>
+        </tr>
+        <tr>
+            <td>RoomId</td>
+            <td>Integer</td>
+            <td>primary_key/foreign_key = True</td>
+        </tr>
+        <tr>
+            <td>Cost</td>
+            <td>Float</td>
+            <td>primary_key = True</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>String</td>
+            <td>primary_key = True</td>
+        </tr>
+        <tr>
+            <td>Amount</td>
+            <td>Integer</td>
+            <td>Nullable = True</td>
+        </tr>
+    </table>
+    <br />
+
+    <h4 style="margin-left:auto; margin-right:auto">Tabla:Storage</h4>
+    <table class="table-striped" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Nombre(Columna)</th>
+            <th>Tipo</th>
+            <th>Datos Adicionales</th>
+        </tr>
+        <tr>
+            <td>Cost</td>
+            <td>Float</td>
+            <td>primary_key/foreign_key = True</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>String</td>
+            <td>primary_key/foreign_key = True</td>
+        </tr>
+        <tr>
+            <td>AmountAvailable</td>
+            <td>Integer</td>
+            <td>Nullable = True</td>
+        </tr>
+        <tr>
+            <td>AmountInRooms</td>
+            <td>Integer</td>
+            <td>Nullable = True</td>
+        </tr>
+    </table>
+</body>

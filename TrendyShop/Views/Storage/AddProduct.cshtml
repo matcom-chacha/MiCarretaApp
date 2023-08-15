@@ -1,0 +1,45 @@
+﻿@using TrendyShop.ViewModels
+@{
+    ViewData["Title"] = "Nuevo Producto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@model NewProductViewModel
+
+<div class="col-lg-4 mx-auto">
+    <div class="card">
+        <h3 class="card-header">Nuevo Producto Gastronómico</h3>
+        <div class="card-body">
+            @using (Html.BeginForm("InsertNewProduct", "Storage"))
+            {
+                <div class=" form-group">
+                    @Html.LabelFor(npvm => npvm.GastronomicProduct.Name)
+                    @Html.TextBoxFor(npvm => npvm.GastronomicProduct.Name, new {@class = "form-control" ,@autofocus = true })
+                    @Html.ValidationMessageFor(npvm => npvm.GastronomicProduct.Name)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(npvm => npvm.GastronomicProduct.Cost)
+                    @Html.TextBoxFor(npvm => npvm.GastronomicProduct.Cost, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(npvm => npvm.GastronomicProduct.Cost)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(npvm => npvm.GastronomicProduct.Price)
+                    @Html.TextBoxFor(npvm => npvm.GastronomicProduct.Price, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(npvm => npvm.GastronomicProduct.Price)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(npvm => npvm.InitialAmount)
+                    @Html.TextBoxFor(npvm => npvm.InitialAmount, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(npvm => npvm.InitialAmount)
+                </div>
+
+                <button type="submit">Insertar Producto</button>
+                <button type="button" onclick="location.pathname='/Storage'">Cancelar</button>
+            }
+        </div>
+    </div>
+</div>
+

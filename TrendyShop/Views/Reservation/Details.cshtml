@@ -1,0 +1,69 @@
+﻿@using TrendyShop.Models
+@model Reservation
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-6 mx-auto">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex flex-column">
+                <h4 class="mb-3">Habitacion #@Model.RoomId</h4>
+
+                <div class="d-flex">
+                    <h5 class="mb-0">Entrada: @Model.Date.ToString("hh:mm tt")</h5>
+                    <h5 class="ml-4 mb-0">Salida: @Model.FinalDate.ToString("hh:mm tt")</h5>
+                    <h5 class="ml-4 mb-0">Fecha: @Model.Date.ToString("dd/MM/yyyy")</h5>
+                </div>
+                <h5 class="mb-0">Cliente: @Model.Customer</h5>
+                <h5 class="mb-0">Teléfono: @Model.Phone</h5>
+                @if (Model.Romantic)
+                {
+                    <h5 class="mb-0">Decoración Romántica <i class="fas fa-heart"></i></h5>
+                }
+                @if (Model.IsConfirmed)
+                {
+                    <div class="mr-auto mt-3">
+                        <form asp-action="CancelConfirm" asp-controller="Reservation" asp-route-roomId="@Model.RoomId" asp-route-_date="@Model.Date">
+                            <button type="submit">Cancelar Reservación</button>
+                        </form>
+                        @*<button style="background-color: rgb(116,216,216) ">
+                                @Html.ActionLink("Cancelar Reservación", "CancelConfirm", "Reservation", new { roomId = Model.RoomId, _date = Model.Date })
+                            </button>*@
+                    </div>
+                }
+                else
+                {
+                    <div class="mr-auto mt-3">
+                        <form asp-action="Confirm" asp-controller="Reservation" asp-route-roomId="@Model.RoomId" asp-route-_date="@Model.Date">
+                            <button type="submit">Confirmar Reservación</button>
+                        </form>
+                        @*<button style="background-color: white">
+                                @Html.ActionLink("Confirmar Reservación", "Confirm", "Reservation", new { roomId = Model.RoomId, _date = Model.Date })
+                            </button>*@
+                    </div>
+                }
+            </div>
+        </div>
+        <div class=" card-footer">
+            <div class="d-flex">
+                @*<form asp-action="Register" asp-controller="Lodging" asp-route-roomId="@Model.RoomId" asp-route-_date="@Model.Date">
+                        <button style="margin-right:10px" type="submit">Iniciar</button>
+                    </form>*@
+                @Html.ActionLink("", "Register", "Lodging", new { roomId = Model.RoomId, _date = Model.Date }, new { @class = "fas fa-key fa-lg ml-3 mb-0", @title = "Iniciar" })
+                @Html.ActionLink("", "Edit", "Reservation", new { roomId = Model.RoomId, _date = Model.Date }, new { @class = "fas fa-edit ml-4 fa-lg mb-0", @title = "Editar" })
+                @Html.ActionLink("", "Delete", "Reservation", new { roomId = Model.RoomId, _date = Model.Date }, new { @class = "fas fa-trash-alt ml-4 fa-lg mb-0", @title = "Eliminar" })
+
+                @*<form asp-action="Edit" asp-controller="Reservation" asp-route-roomId="@Model.RoomId" asp-route-_date="@Model.Date">
+                        <button style="margin-right:10px" type="submit">Editar</button>
+                    </form>*@
+                @*<button class="ml-auto" type="button" onclick="location.pathname='/Home'">Cancelar</button>*@
+                @*<form class="ml-auto" asp-action="Delete" asp-controller="Reservation" asp-route-roomId="@Model.RoomId" asp-route-_date="@Model.Date">
+                        <button style="margin-right:10px; background-color: rgb(253,63,61)" type="submit">Eliminar</button>
+                    </form>*@
+                <a class="ml-auto" href="/Home">Atrás</a>
+            </div>
+        </div>
+    </div>
+</div>

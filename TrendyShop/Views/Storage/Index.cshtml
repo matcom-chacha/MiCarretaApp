@@ -1,0 +1,139 @@
+﻿@using TrendyShop.ViewModels
+@{
+    ViewData["Title"] = "Almacén";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@model StorageIndexviewModel
+<head>
+    <meta name="viewport"
+          content="width=device-width , initial-scale=1">
+    <style>
+        .tab-pane {
+            height: 1000px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tab-regular">
+        <ul class="nav nav-tabs" id="myTab7" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab-justify" data-toggle="tab" href="#home-justify" role="tab" aria-controls="home" aria-selected="true">
+                    Productos Gastronómicos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab-justify" data-toggle="tab" href="#profile-justify" role="tab" aria-controls="profile" aria-selected="false">Productos Gastables</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent7">
+            <div class="tab-pane fade show active" id="home-justify" role="tabpanel" aria-labelledby="home-tab-justify">
+                @foreach (var storageRow in Model.GastronomicProducts)
+                {
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header" style="height:50px; background-color:rgb(116,216,216)">
+                                <div class="row d-flex">
+                                    <h4>@storageRow.Name </h4>
+                                    <h4 class="ml-auto">Costo: @storageRow.Cost $</h4>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-text">Precio: @storageRow.GastronomicProduct.Price $</h5>
+                                <div class="d-flex">
+                                    <h5 class="card-text mb-0">Cantidad en almacén: @storageRow.AmountAvailable</h5>
+                                    <h5 class="card-text ml-4">Cantidad en habitaciones: @storageRow.AmountInRooms</h5>
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex">
+                                <form asp-action="Refill" asp-controller="Storage" asp-route-productCost="@storageRow.Cost" asp-route-productName="@storageRow.Name">
+                                    <button class="mb-0" type="submit">Reponer</button>
+                                </form>
+                                <form asp-action="ExtractGastronomicProduct" asp-controller="Storage" asp-route-productCost="@storageRow.Cost" asp-route-productName="@storageRow.Name">
+                                    <button class="ml-1" type="submit">Extraer</button>
+                                </form>
+                                @*<button class="mb-0" onclick="showGProductRefillModal(@storageRow.Cost, '@storageRow.Name' )">Reponer</button>*@
+
+                                <form asp-action="GastProdDetails" asp-controller="Storage" asp-route-productCost="@storageRow.Cost" asp-route-productName="@storageRow.Name">
+                                    @*@Html.HiddenFor(e => storageRow.Cost)
+                                        @Html.HiddenFor(e => storageRow.Name)*@
+                                    <button class="ml-1" type="submit">Detalles</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <button onclick="location.href='/Storage/AddProduct'">Añadir Producto</button>
+            </div>
+            <div class="tab-pane fade" id="profile-justify" role="tabpanel" aria-labelledby="profile-tab-justify">
+                @foreach (var expProduct in Model.ExpProducts)
+                {
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header" style="height:50px; background-color:rgb(116,216,216)">
+                                <div class="row d-flex">
+                                    <h4 class="mb-0"> @expProduct.Name</h4>
+                                    <h4 class="ml-auto">Costo: @expProduct.Cost $</h4>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-text">Cantidad en almacén: @expProduct.TotalQuantity</h5>
+                            </div>
+                            <div class="card-footer d-flex">
+                                <form asp-action="RefillExpProd" asp-controller="Storage" asp-route-productCost="@expProduct.Cost" asp-route-productName="@expProduct.Name">
+                                    <button class="mb-0" type="submit">Reponer</button>
+                                </form>
+                                <form asp-action="ExtractExpendableProduct" asp-controller="Storage" asp-route-productCost="@expProduct.Cost" asp-route-productName="@expProduct.Name">
+                                    <button class="ml-1" type="submit">Extraer</button>
+                                </form>
+                                <form asp-action="ExpProdDetails" asp-controller="Storage" asp-route-productCost="@expProduct.Cost" asp-route-productName="@expProduct.Name">
+                                    <button class="ml-1" type="submit">Detalles</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <button onclick="location.href='/Storage/AddExpProduct'">Añadir Producto</button>
+            </div>
+        </div>
+    </div>
+</body>
+@*@if (@Model.ProductName != "")
+    {
+        <script>
+            $('#refillModal').modal();
+        </script>
+    }*@
+<div class="modal fade" id="refillModal" tabindex="-1" role="dialog" aria-labelledby="refillModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="refillModalLongTitle">@Model.ProductName</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="UpdateRefill" asp-controller="Storage">
+                    @Html.TextBoxFor(m => m.AmountToAdd)
+                    <button type="submit">Añadir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@*<script>
+        function showGProductRefillModal() {
+            return $('#refillModal').modal();
+        }
+        function getProductCost() {
+            return document.getElementById("ProductCost").value
+        }
+        function getProductName() {
+            return document.getElementById("ProductName").value
+        }
+    </script>*@

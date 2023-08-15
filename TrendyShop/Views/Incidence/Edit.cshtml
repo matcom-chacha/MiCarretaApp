@@ -1,0 +1,49 @@
+﻿@model TrendyShop.Models.Incidence
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-lg-5 mx-auto">
+    <div class="card">
+        <div class="card-header">Editar Incidencia</div>
+        <div class="card-body">
+            @using (Html.BeginForm("SaveEdit", "Incidence"))
+            {
+
+                <div class=" form-group">
+                    @Html.LabelFor(a => a.Subject)
+                    @Html.TextBoxFor(a => a.Subject, new { @class = "form-control", @id = "subject" })
+                    @Html.ValidationMessageFor(a => a.Subject)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(a => a.Price)
+                    @Html.TextBoxFor(a => a.Price, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(a => a.Price)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(a => a.Description)
+                    @Html.TextBoxFor(a => a.Description, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(a => a.Description)
+                </div>
+
+                @Html.HiddenFor(a => a.IncidenceId)
+
+                @*<div class="text-center">
+                         Button HTML (to Trigger Modal)
+                        <a href="#myModal" class="trigger-btn" data-toggle="modal">Click to Open Confirm Modal</a>
+                    </div>
+
+                    @await Html.PartialAsync("ErrorModal")*@
+                <button type="submit">Guardar</button>
+                <button type="button" onclick="location.pathname='/Incidence'">Cancelar</button>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("subject").select();
+</script>

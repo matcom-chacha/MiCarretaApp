@@ -1,0 +1,68 @@
+﻿@using TrendyShop.ViewModels
+@{
+    ViewData["Title"] = "Almacén";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@model GastronomicProductDetailsViewModel
+
+<div class="col-lg-10 mx-auto">
+    <div class="card h-100">
+        <div class="card-header">Reposiciones de @Model.ProductName</div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Fecha </th>
+                    <th>Empleado </th>
+                    <th>Cantidad en almacén</th>
+                    <th>Cantidad en habitaciones</th>
+                    <th>Cantidad que se repuso</th>
+                </tr>
+
+                @foreach (var deposit in Model.Deposits)
+                {
+                    <tr>
+                        <td>@deposit.Date.ToString("dd/MM/yy")</td>
+                        <td>@deposit.Employee.Name</td>
+                        <td>@deposit.AmountAvailable</td>
+                        <td>@deposit.AmountInrooms</td>
+                        <td>@deposit.OperationAmount</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="card-footer">
+            <button type="button" onclick="location.pathname='/Storage'">Atrás</button>
+        </div>
+    </div>
+</div>
+<div class="col-lg-10 mx-auto">
+    <div class="card">
+        <div class="card-header"> Extracciones de @Model.ProductName</div>
+        <div class=" card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Empleado</th>
+                    <th>Cantidad en almacén</th>
+                    <th>Cantidad en habitaciones</th>
+                    <th>Cantidad extraída</th>
+                </tr>
+
+                @foreach (var extraction in Model.Extractions)
+                {
+                    <tr>
+                        <td>@extraction.Date.ToString("dd/MM/yy")</td>
+                        <td>@extraction.Employee.Name</td>
+                        <td>@extraction.AmountAvailable</td>
+                        <td>@extraction.AmountInrooms</td>
+                        <td>@extraction.OperationAmount</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="card-footer">
+            <button type="button" onclick="location.pathname='/Storage'">Atrás</button>
+        </div>
+    </div>
+</div>

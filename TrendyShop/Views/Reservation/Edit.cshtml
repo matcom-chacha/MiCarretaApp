@@ -1,0 +1,58 @@
+﻿@model TrendyShop.ViewModels.EditReservationViewModel
+@{
+    ViewData["Title"] = "EdiciónReserva";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-lg-4 mx-auto">
+    <div class="card">
+        <div class="card-header">Editar reservación</div>
+        <div class="card-body">
+            @using (Html.BeginForm("SaveEdition", "Reservation"))
+            {
+                <div class=" form-group">
+                    @Html.LabelFor(r => r.Reservation.Customer)
+                    @Html.TextBoxFor(r => r.Reservation.Customer, new { @class = "form-control", @id = "customer" })
+                    @Html.ValidationMessageFor(r => r.Reservation.Customer)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(r => r.Reservation.Phone)
+                    @Html.TextBoxFor(r => r.Reservation.Phone, new { @class = "form-control"})
+                    @Html.ValidationMessageFor(r => r.Reservation.Phone)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(r => r.Reservation.RoomId)
+                    @Html.DropDownListFor(r => r.Reservation.RoomId, new SelectList(Model.Rooms, "RoomId", "RoomId"), "", new { @class = "form-control" })
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(r => r.Reservation.Date)
+                    @Html.TextBoxFor(r => r.Reservation.Date, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(r => r.Reservation.Date)
+                </div>
+
+                <div class=" checkbox">
+                    @Html.LabelFor(r => r.Reservation.Romantic)
+                    @Html.CheckBoxFor(r => r.Reservation.Romantic)
+                    @Html.ValidationMessageFor(r => r.Reservation.Romantic)
+                </div>
+                @Html.HiddenFor(r => r.OldRoomId)
+                @Html.HiddenFor(r => r.OldDate)
+                <button type="submit">Guardar</button>
+            }
+            <div class="d-flex">
+                <div class="ml-auto">
+                    <form asp-action="Details" asp-controller="Reservation" asp-route-roomId="@Model.Reservation.RoomId" asp-route-_date="@Model.Reservation.Date">
+                        <button type="submit">Cancelar</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("customer").select();
+</script>

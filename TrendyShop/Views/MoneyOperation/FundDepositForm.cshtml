@@ -1,0 +1,29 @@
+﻿@using TrendyShop.Models
+@model FundMoneyOperation
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="col-lg-4 mx-auto">
+    <div class="card">
+        <div class="card-body">
+            <form asp-controller="MoneyOperation" asp-action="FundDeposit">
+                <div class="d-flex flex-column form-group">
+                    @Html.LabelFor(m => m.Amount)
+                    @Html.TextBoxFor(m => m.Amount, new { @id = "amount"})
+                    @Html.ValidationMessageFor(m => m.Amount)
+                </div>
+                <div class="d-flex flex-column form-group">
+                    @Html.LabelFor(m => m.Subject)
+                    @Html.TextBoxFor(m => m.Subject)
+                    @Html.ValidationMessageFor(m => m.Subject)
+                </div>
+                <button type="submit">Depositar</button>
+                <button type="button" onclick="location.pathname='/MoneyOperation'">Cancelar</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("amount").select();
+</script>

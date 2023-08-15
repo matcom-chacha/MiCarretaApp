@@ -1,0 +1,41 @@
+﻿
+@model TrendyShop.Models.Employee
+@{
+    ViewData["Title"] = "NewEmployee";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h1>Nuevo Empleado</h1>
+
+
+<div class="row breadcrumb">
+    @using (Html.BeginForm("CreateEmployee", "Employee"))
+    {
+
+        <div class=" form-group">
+            @Html.LabelFor(a => a.Name)
+            @Html.TextBoxFor(a => a.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(a => a.Name)
+        </div>
+
+        <div class=" form-group">
+            @Html.LabelFor(a => a.EmployeeId)
+            @Html.TextBoxFor(a => a.EmployeeId, new { @class = "form-control" })
+            @Html.ValidationMessageFor(a => a.EmployeeId)
+        </div>
+
+        <div class=" form-group">
+            @Html.LabelFor(a => a.Phone)
+            @Html.TextBoxFor(a => a.Phone, new { @class = "form-control" })
+            @Html.ValidationMessageFor(a => a.Phone)
+        </div>
+
+        @*<div class="text-center">
+                 Button HTML (to Trigger Modal)
+                <a href="#myModal" class="trigger-btn" data-toggle="modal">Click to Open Confirm Modal</a>
+            </div>
+            @await Html.PartialAsync("ErrorModal")*@
+        <button type="submit" href="#myModal" data-toggle="modal">Insertar Empleado</button>
+    }
+</div>

@@ -1,0 +1,19 @@
+﻿@using TrendyShop.Utility
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Presentation</title>
+</head>
+<body style="background-color:aqua">
+    <h1>Bienvenido a Mi Carreta</h1>
+    @if (User.IsInRole(SD.AdminEndUser))
+    {
+        <button onclick="location.pathname = 'Identity/Account/Register'" id="register" asp-area="Identity" asp-page="/Account/Register">Register</button>
+    }
+    <button onclick="location.pathname = 'Identity/Account/Login'"   id="login" asp-area="Identity" asp-page="/Account/Login">Iniciar Sesión</button>
+</body>
+</html>

@@ -1,0 +1,109 @@
+﻿@using TrendyShop.ViewModels
+@{
+    ViewData["Title"] = "Reservaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model IEnumerable<YearStatisticsViewModel>
+
+
+<script type="text/javascript">
+    function togglezAppearance() {
+        var dataDiv = document.getElementById("data-table");
+        if (dataDiv.style.visibility == "hidden") {
+            dataDiv.style.visibility = "visible";
+        } else {
+            dataDiv.style.visibility = "hidden";
+        }
+    }
+</script>
+
+<div class="col-lg-12 mx-auto">
+    <div class="card">
+        <div class="card-header">Estadísticas Anuales</div>
+        <div class="card-body">
+            @foreach (YearStatisticsViewModel ys in Model)
+            {
+                string collapseYear = '#' + @ys.Year.ToString();
+
+                <div class="container">
+                    <div class="panel-group" id="accordion">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="@collapseYear">@ys.Year</a>
+                                </h3>
+                            </div>
+                            <div id="@ys.Year.ToString()" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                    <table class="table table-bordered">
+                                        <tr>
+
+                                            <th></th>
+                                            <th>Reservas</th>
+                                            <th>Reservas Dobles</th>
+                                            <th>Reservas Diarias</th>
+                                            <th>Ingreso x Renta</th>
+                                            <th>Consumo</th>
+                                            <th>Ganancia x Consumo</th>
+                                            <th>Ingreso x daños</th>
+                                            <th>Ingreso Bruto</th>
+                                            <th>Salario</th>
+                                            <th>Otros Gastos</th>
+                                        </tr>
+                                        @for (int i = 1; i < 14; i++)
+                                        {
+                                            <tr>
+                                                @if (i != 13)
+                                                {
+                                                    <td>@ys.Months[i]</td>
+                                                    <td>@ys.LodgingsPerMonth[i]</td>
+                                                    <td>@ys.DoubleLodgingsPerMonth[i]</td>
+                                                    <td>@ys.DailyLodgingsPerMonth[i]</td>
+                                                    <td>@ys.RentIncomePerMoth[i]</td>
+                                                    <td>@ys.ConsumptionIncomePerMonth[i]</td>
+                                                    <td>@ys.ConsumptionProfitPerMonth[i]</td>
+                                                    <td>@ys.DamageIncomePerMoth[i]</td>
+                                                    <td>@ys.GrossIncomePerMonth[i]</td>
+                                                    <td>@ys.SalaryPerMoth[i]</td>
+                                                    <td>@ys.HouseExpensesPerMoth[i]</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>Total</td>
+                                                    <td>@ys.AnnualLodgings</td>
+                                                    <td>@ys.AnnualDoubleLodgings</td>
+                                                    <td></td>
+                                                    <td>@ys.AnnualRentIncome</td>
+                                                    <td>@ys.AnnualConsumptionIncome</td>
+                                                    <td>@ys.AnnualConsumptionProfit</td>
+                                                    <td>@ys.AnnualDamageIncome</td>
+                                                    <td>@ys.AnnualGrossIncome</td>
+                                                    <td>@ys.AnnualSalary</td>
+                                                    <td>@ys.AnnualHouseExpenses</td>
+                                                }
+                                            </tr>
+                                        }
+                                    </table>
+                                    @*<div class="card-footer">
+                                            @Html.ActionLink("Exportar a Excel", "ExportToExcel", "Statistics", new { yearS = ys})
+                                        </div>*@
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                @*<h3> @Html.ActionLink(year.ToString(), "Details", "Statistics", new { year })</h3>*@
+            }
+        </div>
+        <div class="card-footer">
+            <button onclick="location.pathname='/Home'">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

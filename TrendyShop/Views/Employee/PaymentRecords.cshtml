@@ -1,0 +1,43 @@
+﻿
+@using TrendyShop.Models
+@{
+    ViewData["Title"] = "Registro De Pagos a Empleados";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Tuple<string, List<EmployeePaymentRecords>, string>
+
+<div class="col-lg-8 mb-4 mx-auto">
+    <div class="card ">
+        <div class="card-header d-flex">
+            <h2 class="mb-0">Registro de pagos</h2>
+            <h2 class="mb-0 ml-auto">@Model.Item1</h2>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Cantidad</th>
+                </tr>
+
+                @foreach (var payment in Model.Item2)
+                {
+                    <tr>
+                        <td>@payment.Date.ToString("dd/MM/yy")</td>
+                        <td>@payment.Payment $</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="card-footer">
+            <form asp-action="EmployeeProfile" asp-controller="Employee" asp-route-id="@Model.Item3">
+                <button type="submit">Cancelar</button>
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+

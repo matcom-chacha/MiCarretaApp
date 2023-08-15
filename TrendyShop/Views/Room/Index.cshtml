@@ -1,0 +1,237 @@
+﻿@using TrendyShop.ViewModels
+@{
+    ViewData["Title"] = "Gestión de Habitaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model RoomViewModel
+<div class="row">
+    @foreach (var room in Model.Rooms)
+    {
+        int id = Model.Rooms.FindIndex(r => r == room) + 1;
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <div class="card">
+                <div class="card-header">Habitacion #@id</div>
+                <div class="card-body">
+                    @if (room.Count > 0)
+                    {
+                        <table class="table" style="border-collapse:collapse">
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th></th>
+                            </tr>
+                            @foreach (var p in room)
+                            {
+                                <tr>
+                                    <td  style="border: none">@p.Name</td>
+                                    <td style="border: none">@p.GastronomicProduct.Price $</td>
+                                    <td style="border: none">
+                                        <form asp-action="UpdateQuantity" asp-route-cost="@p.Cost" asp-route-name="@p.Name" asp-route-roomId="@p.RoomId">
+                                            <input style="width:50px" type="number" name="quantity" value="@p.Amount" />
+                                        </form>
+                                    </td>
+                                    <td style="border: none">@Html.ActionLink("", "Delete", "Room", new { cost = p.Cost, name = p.Name, roomId = p.RoomId }, new { @class = "fas fa-trash-alt" })</td>
+                                </tr>
+                            }
+                        </table>
+                    }
+                    @if (id == 1)
+                    {
+                        <button onclick="setProducts(1)">Añadir</button>
+                    }
+                    else if (id == 2)
+                    {
+                        <button onclick="setProducts(2)">Añadir</button>
+                    }
+                    else
+                    {
+                        <button onclick="setProducts(3)">Añadir</button>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<button type="button" data-toggle="modal" data-target="#rmodal">Reorganizar Productos</button>
+
+@Html.Partial("_ReplaceModal", new RoomReplaceViewModel { Rooms = Model.RoomList })
+
+@* --------------- Modal Room #1 ----------------------- *@
+<div class="modal fade" id="addProduct1Modal" tabindex="-1" role="dialog" aria-labelledby="addProduct1ModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProduct1ModalLongTitle">Añadir a Habitación #1</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Add" asp-route-roomId="0">
+                <div class="modal-body">
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>En almacén</th>
+                            <th>Cantidad</th>
+                        </tr>
+                        @for (int i = 0; i < Model.Products[0].Count; i++)
+                        {
+                            <tr>
+                                <td>@Model.Products[0][i].Name</td>
+                                <td>@Model.Products[0][i].GastronomicProduct.Price $</td>
+                                <td>@Model.Products[0][i].AmountAvailable</td>
+
+                                <td>
+                                    <input asp-for="AmountToAdd1[i]" type="number"  />
+                                </td>
+                                @Html.HiddenFor(m => m.Products[0][i].Cost)
+                                @Html.HiddenFor(m => m.Products[0][i].Name)
+                                @Html.HiddenFor(m => m.Products[0][i].AmountAvailable)
+                                @Html.HiddenFor(m => m.Products[0][i].AmountInRooms)
+                                @Html.HiddenFor(m => m.Products[0][i].TotalAmount)
+                                @Html.HiddenFor(m => m.Products[0][i].GastronomicProduct.Cost)
+                                @Html.HiddenFor(m => m.Products[0][i].GastronomicProduct.Name)
+                                @Html.HiddenFor(m => m.Products[0][i].GastronomicProduct.Price)
+                            </tr>
+                        }
+                        @*@Html.HiddenFor(m => m.AmountToAdd1.Length)*@
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit">Añadir</button>
+                    <button type="button" data-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+@* --------------- Modal Room #2 ----------------------- *@
+<div class="modal fade" id="addProduct2Modal" tabindex="-1" role="dialog" aria-labelledby="addProduct2ModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProductModal2LongTitle">Añadir a Habitación #2</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Add" asp-route-roomId="1">
+                <div class="modal-body">
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>En almacén</th>
+                            <th>Cantidad</th>
+                        </tr>
+                        @Html.HiddenFor(m => m.Products[0])
+                        @for (int i = 0; i < Model.Products[1].Count; i++)
+                        {
+                            <tr>
+                                <td>@Model.Products[1][i].Name</td>
+                                <td>@Model.Products[1][i].GastronomicProduct.Price $</td>
+                                <td>@Model.Products[1][i].AmountAvailable</td>
+
+                                <td>
+                                    <input asp-for="AmountToAdd2[i]" type="number" />
+                                </td>
+                                @Html.HiddenFor(m => m.Products[1][i].Cost)
+                                @Html.HiddenFor(m => m.Products[1][i].Name)
+                                @Html.HiddenFor(m => m.Products[1][i].AmountAvailable)
+                                @Html.HiddenFor(m => m.Products[1][i].AmountInRooms)
+                                @Html.HiddenFor(m => m.Products[1][i].TotalAmount)
+                                @Html.HiddenFor(m => m.Products[1][i].GastronomicProduct.Cost)
+                                @Html.HiddenFor(m => m.Products[1][i].GastronomicProduct.Name)
+                                @Html.HiddenFor(m => m.Products[1][i].GastronomicProduct.Price)
+                            </tr>
+                        }
+                        @*@Html.HiddenFor(m => m.AmountToAdd1.Length)*@
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit">Añadir</button>
+                    <button type="button" data-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* --------------- Modal Room #3 ----------------------- *@
+<div class="modal fade" id="addProduct3Modal" tabindex="-1" role="dialog" aria-labelledby="addProduct3ModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProduct3ModalLongTitle">Añadir a Habitación #3</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Add" asp-route-roomId="2">
+                <div class="modal-body">
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>En almacén</th>
+                            <th>Cantidad</th>
+                        </tr>
+                        @Html.HiddenFor(m => m.Products[0])
+                        @Html.HiddenFor(m => m.Products[1])
+                        @for (int i = 0; i < Model.Products[2].Count; i++)
+                        {
+                            <tr>
+                                <td>@Model.Products[2][i].Name</td>
+                                <td>@Model.Products[2][i].GastronomicProduct.Price $</td>
+                                <td>@Model.Products[2][i].AmountAvailable</td>
+
+                                <td>
+                                    <input asp-for="AmountToAdd3[i]" type="number" />
+                                </td>
+                                @Html.HiddenFor(m => m.Products[2][i].Cost)
+                                @Html.HiddenFor(m => m.Products[2][i].Name)
+                                @Html.HiddenFor(m => m.Products[2][i].AmountAvailable)
+                                @Html.HiddenFor(m => m.Products[2][i].AmountInRooms)
+                                @Html.HiddenFor(m => m.Products[2][i].TotalAmount)
+                                @Html.HiddenFor(m => m.Products[2][i].GastronomicProduct.Cost)
+                                @Html.HiddenFor(m => m.Products[2][i].GastronomicProduct.Name)
+                                @Html.HiddenFor(m => m.Products[2][i].GastronomicProduct.Price)
+                            </tr>
+                        }
+                        @*@Html.HiddenFor(m => m.AmountToAdd1.Length)*@
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit">Añadir</button>
+                    <button type="button" data-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function setProducts(i) {
+        if (i == 1) {
+            $('#addProduct1Modal').modal();
+        }
+        else if (i == 2) {
+            $('#addProduct2Modal').modal();
+        }
+        else {
+            $('#addProduct3Modal').modal();
+        }
+    }
+
+        //function submitModal() {
+        //    document.getElementById("addProduct1Modal").submit();
+        //}
+</script>

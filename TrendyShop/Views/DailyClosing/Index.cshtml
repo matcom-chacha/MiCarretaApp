@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "DailyClosing/Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@model IList<DateOfClosing>
+
+<div class=" mx-auto col-lg-6">
+    <div class="card">
+        <div class="card-header">Cierres realizados </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Fecha</th>
+                </tr>
+                @foreach (var closing in Model)
+                {
+                    string str = closing.Date.ToString("dd/MM hh:mm tt");
+                    <tr>
+                        <td>@Html.ActionLink(str, "Details", "DailyClosing", new { dateOfClosingTicks = closing.Date.Ticks }, null)</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="card-footer">
+            <button onclick="location.pathname = '/DailyClosing/Close'">Nuevo Cierre</button>
+            <button onclick="location.pathname = '/Home'">Cancelar</button>
+        </div>
+    </div>
+</div>
+

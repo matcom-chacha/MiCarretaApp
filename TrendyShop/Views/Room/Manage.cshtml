@@ -1,0 +1,99 @@
+﻿@using TrendyShop.ViewModels
+@{
+    ViewData["Title"] = "Manage Room No.";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model ManageRoomViewModel
+
+<h1>Manage Room @Model.RoomId</h1>
+
+<div>
+    <h4 style="margin-left:auto; margin-right:auto">Paquete</h4>
+
+    <table class="table-striped" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Producto</th>
+            <th>Costo</th>
+            <th>Requerido</th>
+            <th>Necesario añadir</th>
+            <th>Posible añadir</th>
+        </tr>
+        @for(int i = 0; i < Model.Package.Count; i++)
+        {
+            <tr>
+                <td>@Model.Package[i].Name</td>
+                <td>@Model.Package[i].Cost</td>
+                <td>@Model.Package[i].Quantity</td>
+                <td>@Model.AmountToAdd[i]</td>
+                <td>@Model.RealAmountToAdd[i]</td>
+
+            </tr>
+        }
+    </table>
+</div>
+
+<head>
+    <style>
+        input {
+            width: 50%;
+            border-color: grey;
+            border-width: thin;
+            border-radius: 2px
+        }
+    </style>
+</head>
+<body>
+    <h4 style="margin-left:auto; margin-right:auto">En habitación</h4>
+    <div>
+        <table class="table-striped" style="margin-left:auto; margin-right:auto">
+            <tr>
+                <th>Producto</th>
+                <th>Costo</th>
+                <th>Cantidad</th>
+            </tr>
+            @foreach (var p in Model.RoomProducts)
+            {
+                <tr>
+                    <td>@p.Name</td>
+                    <td>@p.Cost</td>
+                    
+                    <td>
+                        <form asp-action="UpdateQuantity" asp-route-cost="@p.Cost" asp-route-name="@p.Name" asp-route-roomId="@Model.RoomId">
+                            <input type="number" name="quantity" value="@p.Amount" />
+                        </form>
+                    </td>
+                    <td>@Html.ActionLink("", "Delete", "Room", new { cost = p.Cost, name = p.Name, roomId = @Model.RoomId }, new { @class = "fas fa-trash-alt" })</td>
+
+                </tr>
+            }
+        </table>
+    </div>
+    <br />
+    <br />
+    <div>
+        <h4 style="margin-left:auto; margin-right:auto">Añadir a la habitación desde Almacén</h4>
+
+        <table class="table-striped" style="margin-left:auto; margin-right:auto">
+            <tr>
+                <th>Producto</th>
+                <th>Costo</th>
+                <th>En almacén</th>
+                <th>Cantidad</th>
+            </tr>
+            @foreach (var p in Model.Storage)
+            {
+        <tr>
+            <td>@p.Name</td>
+            <td>@p.Cost</td>
+            <td>@p.AmountAvailable</td>
+
+            <td>
+                <form asp-action="Add" asp-route-cost="@p.Cost" asp-route-name="@p.Name" asp-route-roomId="@Model.RoomId">
+                    <input type="number" step="any" name="quantity" />
+                </form>
+            </td>
+        </tr>
+            }
+        </table>
+    </div>
+</body>

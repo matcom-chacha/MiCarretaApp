@@ -1,0 +1,66 @@
+﻿
+@model TrendyShop.ViewModels.YearStatisticsViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<h1>@Model.Year</h1>
+
+
+
+<table class="table-striped"  style="width:110%;">
+    <tr>
+
+        <th></th>
+        <th>Reservas</th>
+        <th>Reservas Dobles</th>
+        <th>Reservas Diarias</th>
+        <th>Ingreso x Renta</th>
+        <th>Consumo</th>
+        <th>Ganancia x Consumo</th>
+        <th>Ingreso x daños</th>
+        <th>Ingreso Bruto</th>
+        <th>Salario</th>
+        <th>Otros Gastos</th>
+    </tr>
+
+
+     @for (int i = 1; i <14 ; i++)
+     {
+<tr>
+    @if (i != 13)
+    {
+        <td>@Model.Months[i]</td>
+        <td>@Model.LodgingsPerMonth[i]</td>
+        <td>@Model.DoubleLodgingsPerMonth[i]</td>
+        <td>@Model.DailyLodgingsPerMonth[i]</td>
+        <td>@Model.RentIncomePerMoth[i]</td>
+        <td>@Model.ConsumptionIncomePerMonth[i]</td>
+        <td>@Model.ConsumptionProfitPerMonth[i]</td>
+        <td>@Model.DamageIncomePerMoth[i]</td>
+        <td>@Model.GrossIncomePerMonth[i]</td>
+        <td>@Model.SalaryPerMoth[i]</td>
+        <td>@Model.HouseExpensesPerMoth[i]</td>
+    }
+    else { 
+    <td></td>
+    <td>@Model.AnnualLodgings</td>
+    <td>@Model.AnnualDoubleLodgings</td>
+    <td></td>
+    <td>@Model.AnnualRentIncome</td>
+    <td>@Model.AnnualConsumptionIncome</td>
+    <td>@Model.AnnualConsumptionProfit</td>
+    <td>@Model.AnnualDamageIncome</td>
+    <td>@Model.AnnualGrossIncome</td>
+    <td>@Model.AnnualSalary</td>
+    <td>@Model.AnnualHouseExpenses</td>
+    }
+</tr>
+     }
+
+</table>
+<br />
+

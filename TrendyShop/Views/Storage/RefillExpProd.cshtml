@@ -1,0 +1,41 @@
+﻿@using TrendyShop.ViewModels
+@{
+    ViewData["Title"] = "ReponerProducto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model EditExpProdStorageViewModel
+
+<div class="col-lg-4 mb-4 mx-auto">
+    <div class="card">
+        <div class="card-header">
+            <div class=" d-flex">
+                <text class="mb-0">@Model.ExpProduct.Name</text>
+                <text class="ml-auto">Cost: @Model.ExpProduct.Cost $</text>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="card-text">Cantidad total: @Model.ExpProduct.TotalQuantity</p>
+
+            @using (Html.BeginForm("UpdateRefillExpProd", "Storage"))
+            {
+                <div class=" form-group">
+                    @Html.LabelFor(esrvm => esrvm.AmountToAdd)
+                    @Html.TextBoxFor(esrvm => esrvm.AmountToAdd, new { @class = "form-control", @id = "amount" })
+                    @Html.ValidationMessageFor(esrvm => esrvm.AmountToAdd)
+                </div>
+                @Html.HiddenFor(esrvm => esrvm.ExpProduct.Cost)
+                @Html.HiddenFor(esrvm => esrvm.ExpProduct.Name)
+
+                <button type="submit">Guardar</button>
+                <button type="button" onclick="location.pathname ='/Storage'">Cancelar</button>
+            }
+        </div>
+
+        @*<div class="card-footer">
+                @Html.ActionLink("Editar", "Refill", "Storage", new { productCost = storageRow.Cost, productName = storageRow.Name, })
+            </div>*@
+    </div>
+</div>
+<script>
+    document.getElementById("amount").select();
+</script>

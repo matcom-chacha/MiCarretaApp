@@ -1,0 +1,129 @@
+﻿@using TrendyShop.ViewModels
+@model LodgingDetailsViewModel
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-6 mx-auto">
+    <div class="card h-100">
+        <h3 class="card-header">
+            Habitación #@Model.Lodging.RoomId
+        </h3>
+        <div class="card-body">
+            <h5>Cliente: @Model.Lodging.Customer.Name</h5>
+
+            <div class="d-flex">
+                <h5 class="mb-0">Entrada: @Model.Lodging.ActualIDate.ToString("hh:mm tt")</h5>
+                @if (Model.Lodging.Active)
+                {
+                    <h5 class="ml-4">Salida: @Model.Lodging.FinalDate.ToString("hh:mm tt")</h5>
+
+                }
+                else
+                {
+                    <h5 class="ml-4">Salida: @Model.Lodging.ActualFDate.ToString("hh:mm tt")</h5>
+                }
+                <h5 class="ml-4">Fecha: @Model.Lodging.Date.ToString("dd/MM/yyyy")</h5>
+            </div>
+
+            @if (Model.Lodging.Active)
+            {
+                <h5>En curso <i class="fas fa-check"></i></h5>
+            }
+
+
+            @if (Model.Lodging.Romantic)
+            {
+                <h5>Decoración Romántica <i class="fas fa-heart"></i></h5>
+            }
+
+            <h5>Renta: @Model.Lodging.RentCost $</h5>
+
+            @if (Model.Purchase.Count > 0)
+            {
+                <h4 style="background-color:rgb(240,240,250); border-radius:0.5px; padding:1px; width:100%" class="mb-0 text-center">Consumo</h4>
+                <table class="table table-hover mb-3" style="width:100%">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    @foreach (var item in Model.Purchase)
+                    {
+                        float income = item.GastronomicProduct.Price * item.Amount;
+                        <tr>
+                            <td class="text-center">@item.Amount</td>
+                            <td>@item.GastronomicProduct.Name</td>
+                            <td class="text-right">@income $</td>
+                        </tr>
+                    }
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th class="text-right">Total: @Model.Lodging.Consumption $</th>
+                    </tr>
+                </table>
+            }
+            @if (Model.Incidences.Count > 0)
+            {
+                <h4 style="background-color:rgb(240,240,250); border-radius:0.5px; padding:1px; width:100%" class="mb-0 text-center">Incidencias</h4>
+                <table class="table table-hover mb-3" style="width:100%">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    @foreach (var incidence in Model.Incidences)
+                    {
+                        <tr>
+                            <td>@incidence.Incidence.Subject</td>
+                            <td>@incidence.Incidence.Description</td>
+                            <td class="text-right">@incidence.Incidence.Price $</td>
+                        </tr>
+                    }
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th class="text-right">Total: @Model.Lodging.ExtraCharge $</th>
+                    </tr>
+                </table>
+            }
+
+            <h5>Total: @Model.Lodging.TotalPrice $</h5>
+        </div>
+        <div class="card-footer d-flex">
+            @*<div class="row">*@
+            @* Un hospedaje se deberia poder editar??? *@
+            @*<form asp-action="Edit" asp-controller="Reservation">
+                    @Html.HiddenFor(m => m.RoomId)
+                    @Html.HiddenFor(m => m.Date)
+                    <button style="margin-right:10px; background-color: dodgerblue" type="submit">Editar</button>
+                </form>*@
+            @* Se deberia poder eliminar??? *@
+            @*<form asp-action="Delete" asp-controller="Reservation">
+                    @Html.HiddenFor(m => m.RoomId)
+                    @Html.HiddenFor(m => m.Date)
+                    <button style="margin-right:10px; background-color: orangered" type="submit">Eliminar</button>
+                </form>*@
+            @*<form asp-action="FinishLodging" asp-controller="Lodging">
+                    @Html.HiddenFor(m => m.RoomId)
+                    @Html.HiddenFor(m => m.Date)
+                    <button style="margin-right:10px" type="submit">Cerrar Hospedaje</button>
+                </form>*@
+            @if (Model.Lodging.Active)
+            {
+                <form asp-action="Purchase" asp-controller="Room" asp-route-_date="@Model.Lodging.Date" asp-route-roomId="@Model.Lodging.RoomId">
+                    <button class="red-button mr-2" type="submit">Cerrar Hospedaje</button>
+                </form>
+            }
+            <button type="button" onclick="location.pathname='/Home'">Cancelar</button>
+            @if (!Model.Lodging.Active)
+            {
+                <p class="ml-auto mb-auto"> @Model.Lodging.Employee.Name </p>
+            }
+            @*</div>*@
+        </div>
+
+    </div>
+</div>

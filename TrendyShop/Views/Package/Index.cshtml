@@ -1,0 +1,32 @@
+﻿@using TrendyShop.Models
+@model IEnumerable<Package>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-lg-8 mb-4 mx-auto">
+    <div class="card ">
+        <div class="card-header h-100">
+            <h2>Paquete del día</h2>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                </tr>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>@p.Name</td>
+                        <td>@p.Quantity</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="card-footer">
+            <button onclick="location.href='Package/Edit'">Editar</button>
+        </div>
+    </div>
+</div>

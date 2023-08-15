@@ -1,0 +1,69 @@
+﻿@using TrendyShop.ViewModels
+@model HouseExpensesViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="col-lg-8 mb-4 mx-auto">
+    <div class="card ">
+        <h2 class="card-header">
+            Últimos pagos
+        </h2>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Cantidad</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                @foreach (HouseExpense e in Model.LastExpenses)
+                {
+                    if (e != null)
+                    {
+                        <tr>
+                            <td>@e.ExpenseType.Name</td>
+                            <td>@e.Date.ToString("dd/MM/yy")</td>
+                            <td>@e.Amount</td>
+                            <td>@Html.ActionLink("", "Delete", "HouseExpenses", new { heid = e.Id }, new { @class = "fas fa-trash-alt" })</td>
+                            <td>@Html.ActionLink("Registro", "Records", "HouseExpenses", new { eid = e.ExpenseTypeId, expenseType = e.ExpenseType.Name }, null)</td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+</div>
+<div class="col-lg-8 mb-4 mx-auto">
+    <div class="card ">
+        <h2 class="card-header">
+            Nuevo Pago de Servicio
+        </h2>
+        <div class="card-body">
+            @using (Html.BeginForm("AddExpense", "HouseExpenses"))
+            {
+                <div class="form-group">
+                    <input type="number" step="any" name="Amount" placeholder="Ingrese cantidad" />
+
+                    <select name="ExpenseTypeId" style="height: 27px">
+                        @foreach (var item in Model.ExpenseTypes)
+                        {
+                            <option value="@item.ExpenseTypeId">@item.Name</option>
+                        }
+                    </select>
+
+                    <label for="Date"></label>
+                    <input type="date" step="any" name="Date" id="Date" value=@Model.DateFormat />
+
+
+                </div>
+                    <button type="submit">Guardar</button>
+                    <button type="button" onclick="location.pathname='/Home'">Cancelar</button>
+            }
+        </div>
+        
+    </div>
+</div>

@@ -1,0 +1,41 @@
+﻿@using TrendyShop.ViewModels
+@{
+    ViewData["Title"] = "Nuevo Producto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@model ExtractGProductViewModel
+
+<div class="col-lg-4 mb-4 mx-auto">
+    <div class="card">
+        <div class="card-header d-flex">
+            <text class="mb-0">@Model.ProductInfo.Name</text>
+            <text class="ml-auto">Costo: @Model.ProductInfo.Cost $</text>
+        </div>
+        <div class="card-body d-flex flex-column">
+            <text class="mb-2">Precio: @Model.ProductInfo.GastronomicProduct.Price $</text>
+            <text class="mb-2">Cantidad en almacén: @Model.ProductInfo.AmountAvailable </text>
+            @using (Html.BeginForm("SaveExtractGastronomicProduct", "Storage"))
+            {
+                <div class="form-group">
+                    <div class="d-flex mb-3">
+                        @Html.LabelFor(m => m.AmountToExtract):
+                        @Html.TextBoxFor(m => m.AmountToExtract, null, new { @style = "width:50px; height: 20px", @class = "ml-1", @id = "amount" })
+                        @Html.ValidationMessageFor(m => m.AmountToExtract)
+                    </div>
+                </div>
+                @Html.HiddenFor(m => m.ProductCost)
+                @Html.HiddenFor(m => m.ProductName)
+                <div>
+                    <button type="submit">Guardar</button>
+                    <button type="button" onclick="location.pathname='/Storage'">Cancelar</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("amount").select();
+    //Validar que la cantidad a extraer sea menor que la cantidad en almacen
+
+</script>

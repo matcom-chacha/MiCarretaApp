@@ -1,0 +1,122 @@
+﻿@model TrendyShop.Models.Lodging
+@{
+    ViewData["Title"] = "RegistrarHospedaje";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="col-lg-4 mx-auto">
+    <div class="card">
+        <div class="card-body">
+            @using (Html.BeginForm("Save", "Lodging"))
+            {
+                <div class=" form-group">
+                    @Html.LabelFor(l => l.Customer.Name)
+                    @Html.TextBoxFor(l => l.Customer.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(l => l.Customer.Name)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(l => l.Customer.CustomerId)
+                    @Html.TextBoxFor(l => l.Customer.CustomerId, new { @class = "form-control", @autofocus = true })
+                    @Html.ValidationMessageFor(l => l.Customer.CustomerId)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(l => l.Companion)
+                    @Html.TextBoxFor(l => l.Companion, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(l => l.Companion)
+                </div>//antes en hospedaje
+
+                <div class=" form-group">
+                    @Html.LabelFor(l => l.Customer.Phone)
+                    @Html.TextBoxFor(l => l.Customer.Phone, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(l => l.Customer.Phone)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(l => l.Prepaid)
+                    @Html.TextBoxFor(l => l.Prepaid, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(l => l.Prepaid)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(l => l.ActualIDate)
+                    @Html.TextBoxFor(l => l.ActualIDate, new { @class = "form-control", @type = "datetime-local", @id = "actualIDate" })
+                    @Html.ValidationMessageFor(l => l.ActualIDate)
+                </div>
+
+
+                @Html.HiddenFor(l => l.RoomId)
+                @Html.HiddenFor(l => l.Date)
+                @Html.HiddenFor(l => l.FinalDate)
+                @Html.HiddenFor(l => l.RentCost)
+                @Html.HiddenFor(l => l.ExtraCharge)
+                @Html.HiddenFor(l => l.TotalPrice)
+                @Html.HiddenFor(l => l.IsDouble)
+                @Html.HiddenFor(l => l.LodgingNumber)
+                @Html.HiddenFor(l => l.Romantic)
+
+
+                <button type="submit">Continuar</button>
+                <button type="button" onclick="location.pathname='/Home'">Cancelar</button>
+            }
+        </div>
+    </div>
+</div>
+
+<div>
+    @if (Model.Customer.IsBlocked)
+    {
+        @section scripts {
+            <script type="text/javascript">
+                $('#warningModal').modal()
+            </script>
+        }
+    }
+</div>
+<div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="warningModalLongTitle">Modal Title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>El cliente actual está bloqueado por:</p>
+            </div>
+            <div class="modal-footer">
+                <form asp-action="ConsentBlockedUser">
+                    @Html.HiddenFor(l => l.Customer.Name)
+                    @Html.HiddenFor(l => l.Customer.IsBlocked)
+                    @Html.HiddenFor(l => l.Customer.CustomerId)
+                    @Html.HiddenFor(l => l.Customer.LastEntrance)
+                    @Html.HiddenFor(l => l.Customer.Phone)
+
+                    @Html.HiddenFor(l => l.RoomId)
+                    @Html.HiddenFor(l => l.Active)
+                    @Html.HiddenFor(l => l.Consumption)
+                    @Html.HiddenFor(l => l.Date)
+                    @Html.HiddenFor(l => l.Prepaid)
+                    @Html.HiddenFor(l => l.RentCost)
+                    @Html.HiddenFor(l => l.LodgingNumber)
+                    <button type="submit">Continuar</button>
+
+                </form>
+                <button onclick="location.pathname='Home/Index'" type="button" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    DateTime now = DateTime.Now;
+    string dateFormat = now.ToString("yyyy-MM-dd") + "T" + now.ToString("HH:mm");
+}
+<script>
+    var date = document.getElementById("actualIDate");
+    date.value = "@dateFormat";
+</script>
+

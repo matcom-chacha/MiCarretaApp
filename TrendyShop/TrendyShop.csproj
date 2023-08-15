@@ -1,0 +1,87 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200302205457_initial.cs" />
+    <Compile Remove="Migrations\20200302205457_initial.Designer.cs" />
+    <Compile Remove="Migrations\20200306030629_secondMigration.cs" />
+    <Compile Remove="Migrations\20200306030629_secondMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200306031513_firstMigration.cs" />
+    <Compile Remove="Migrations\20200306031513_firstMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200306033118_secondMigration.cs" />
+    <Compile Remove="Migrations\20200306033118_secondMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200306033442_secondMigration.cs" />
+    <Compile Remove="Migrations\20200306033442_secondMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200306033641_firstMigration.cs" />
+    <Compile Remove="Migrations\20200306033641_firstMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200306040257_secondMigration.cs" />
+    <Compile Remove="Migrations\20200306040257_secondMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200306041525_thirdMigration.cs" />
+    <Compile Remove="Migrations\20200306041525_thirdMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200306044101_thirdMigration.cs" />
+    <Compile Remove="Migrations\20200306044101_thirdMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200306170109_fourthMigration.cs" />
+    <Compile Remove="Migrations\20200306170109_fourthMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200314031854_tabCustmsEmpysExpsGastsMntcResrv.cs" />
+    <Compile Remove="Migrations\20200314031854_tabCustmsEmpysExpsGastsMntcResrv.Designer.cs" />
+    <Compile Remove="Migrations\20200314151517_PackgPackExpPackGast.cs" />
+    <Compile Remove="Migrations\20200314151517_PackgPackExpPackGast.Designer.cs" />
+    <Compile Remove="Migrations\20200314153522_TestingDateKey.cs" />
+    <Compile Remove="Migrations\20200314153522_TestingDateKey.Designer.cs" />
+    <Compile Remove="Migrations\20200314170436_IncidencesLodgings.cs" />
+    <Compile Remove="Migrations\20200314170436_IncidencesLodgings.Designer.cs" />
+    <Compile Remove="Migrations\20200314173043_IncidencesLodgings1.cs" />
+    <Compile Remove="Migrations\20200314173043_IncidencesLodgings1.Designer.cs" />
+    <Compile Remove="Migrations\20200317195953_DbSetsArePublic.cs" />
+    <Compile Remove="Migrations\20200317195953_DbSetsArePublic.Designer.cs" />
+    <Compile Remove="Migrations\20200317203909_PackageModelDeleted.cs" />
+    <Compile Remove="Migrations\20200317203909_PackageModelDeleted.Designer.cs" />
+    <Compile Remove="Migrations\20200319161442_TotalAmoutInStorageRowNotMapped.cs" />
+    <Compile Remove="Migrations\20200319161442_TotalAmoutInStorageRowNotMapped.Designer.cs" />
+    <Compile Remove="Migrations\20200320003640_RoomNumberChangesToRoomId.cs" />
+    <Compile Remove="Migrations\20200320003640_RoomNumberChangesToRoomId.Designer.cs" />
+    <Compile Remove="Migrations\20200320054634_testing.cs" />
+    <Compile Remove="Migrations\20200320054634_testing.Designer.cs" />
+    <Compile Remove="Migrations\20200325181557_CompanionInReservationNotRequired.cs" />
+    <Compile Remove="Migrations\20200325181557_CompanionInReservationNotRequired.Designer.cs" />
+    <Compile Remove="Migrations\20200330190755_UpdatedExpendableProductKey.cs" />
+    <Compile Remove="Migrations\20200330190755_UpdatedExpendableProductKey.Designer.cs" />
+    <Compile Remove="Migrations\20200503211939_MoneyOperationAdded.cs" />
+    <Compile Remove="Migrations\20200503211939_MoneyOperationAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200526003301_ExpenseTypesIsAClass.cs" />
+    <Compile Remove="Migrations\20200526003301_ExpenseTypesIsAClass.Designer.cs" />
+    <Compile Remove="Migrations\20200526003725_ExpenseTypesIsAClass.cs" />
+    <Compile Remove="Migrations\20200526003725_ExpenseTypesIsAClass.Designer.cs" />
+    <Compile Remove="Migrations\20200713163704_FundModelAdded.cs" />
+    <Compile Remove="Migrations\20200713163704_FundModelAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200915214146_AddedMOTypeModel.cs" />
+    <Compile Remove="Migrations\20200915214146_AddedMOTypeModel.Designer.cs" />
+    <Compile Remove="Migrations\20200916042226_AddedEmployeeToDailyClosingModel.cs" />
+    <Compile Remove="Migrations\20200916042226_AddedEmployeeToDailyClosingModel.Designer.cs" />
+    <Compile Remove="Migrations\20200922040729_a.cs" />
+    <Compile Remove="Migrations\20200922040729_a.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
+    <PackageReference Include="Syncfusion.XlsIO.Net.Core" Version="18.3.0.38" />
+  </ItemGroup>
+
+</Project>

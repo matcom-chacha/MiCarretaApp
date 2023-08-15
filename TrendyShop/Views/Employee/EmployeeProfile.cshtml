@@ -1,0 +1,65 @@
+﻿@model TrendyShop.ViewModels.EmployeeProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+@*<h1 class="mb-0 mx-auto">@Model.Employee.Name</h1>*@
+
+<div class="col-lg-6 mb-4 mx-auto">
+    <div class="card h-100">
+        <div class="card-header">
+            <h2 class="mb-0 mx-auto">@Model.Employee.Name</h2>
+        </div>
+        <div class="card-body">
+            <div class="text-right">
+                <h5 class="ml-auto">Ultimo pago: @Model.Employee.LastPayment.ToString("dd/MM hh:mm tt")</h5>
+            </div>
+            <table class="table table-bordered">
+                <tr>
+                    <td>Fecha</td>
+                    <td>Hospedajes</td>
+                    <td>Pago</td>
+                </tr>
+                @foreach (var a in Model.Lodgings)
+                {
+                    <tr>
+
+                        <td>@a.Key.ToString("dddd dd/MM hh:mm")</td>
+                        <td class="text-right">@a.Count()</td>
+                        <td class="text-right">@a.Count() $</td> @*Deberia ser a.Count() * salario, como es 1 ahora no importa, pero igual debe existir esa variable*@
+                    </tr>
+
+                }
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right" style="background-color:rgb(116,216,216)">Total: @Model.Employee.PendingPayment $</td>
+                </tr>
+            </table>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex">
+                <button class="ml-2">
+                    @Html.ActionLink("Registro de pagos", "PaymentRecords", "Employee", new { eid = @Model.Employee.EmployeeId }, new { @style = "color: white" })
+                </button>
+                <button class="ml-2" onclick="location.pathname='/Employee'">Cancelar</button>
+                <button class="red-button ml-auto">
+                    @Html.ActionLink("Pagar", "ToPay", "Employee", new { eid = @Model.Employee.EmployeeId }, new { @style = "color: white" })
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+@*<a class="button" asp-action="Edit" asp-controller="Employee" asp-route-eid="@Model.Employee.EmployeeId">Editar</a>*@
+@*@Html.ActionLink("Editar", "Edit", "Employee", new { eid = @Model.Employee.EmployeeId }, null)*@
+
+@*@Html.ActionLink("Eliminar", "Delete", "Employee", new { eid = @Model.Employee.EmployeeId }, null)*@
+
+
+@*@Html.ActionLink("Reiniciar", "Restart", "Employee", new { eid = @Model.Employee.EmployeeId }, null)*@ @*Sandra, esto no me acuerdo para qué era y no tiene sentido :(*@
+

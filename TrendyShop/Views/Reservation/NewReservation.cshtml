@@ -1,0 +1,66 @@
+﻿@model TrendyShop.ViewModels.NewReservationViewModel
+@{
+    ViewData["Title"] = "Nueva Reservación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-lg-5 h-auto mb-0 mx-auto">
+    <div class="card">
+        <h1 class="card-header text-center">Nueva Reservación</h1>
+        <div class="card-body">
+            @using (Html.BeginForm("InsertNewReservation", "Reservation"))
+            {
+                <div class=" form-group">
+                    @Html.LabelFor(r => r.Reservation.Customer)
+                    @Html.TextBoxFor(r => r.Reservation.Customer, new { @class = "form-control", @autofocus = true })
+                    @Html.ValidationMessageFor(r => r.Reservation.Customer)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(r => r.Reservation.Phone)
+                    @Html.TextBoxFor(r => r.Reservation.Phone, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(r => r.Reservation.Phone)
+                </div>
+
+                <div class="d-flex flex-column form-group">
+                    <label>Habitación</label>
+                    <div class="d-flex">
+                        <label>@Html.RadioButtonFor(r => r.Reservation.RoomId, 1) 1</label>
+                        <label class="ml-2">@Html.RadioButtonFor(r => r.Reservation.RoomId, 2) 2</label>
+                        <label class="ml-2">@Html.RadioButtonFor(r => r.Reservation.RoomId, 3) 3</label>
+                    </div>
+                </div>
+
+                <div class=" form-group d-flex flex-column">
+                    <label for="InitialDate">Entrada</label>
+                    <input type="datetime-local" name="InitialDate" id="InitialDate" value='@Model.InitialDateFormat' />
+                </div>
+
+                <div class=" form-group d-flex flex-column">
+                    <label for="FinalDate">Salida</label>
+                    <input type="datetime-local" name="FinalDate" id="FinalDate" value='@Model.FinalDateFormat' />
+                </div>
+
+                <div class="mb-3 checkbox">
+                    @Html.LabelFor(r => r.Reservation.Romantic)
+                    @Html.CheckBoxFor(r => r.Reservation.Romantic)
+                    @Html.ValidationMessageFor(r => r.Reservation.Romantic)
+                </div>
+
+                if (Model.RoomOccupied)
+                {
+                    <h3>La habitación seleccionada está ocupada en ese horario.</h3>
+                }
+                <div class="d-flex">
+                    <button type="submit">Insertar Reserva</button>
+                    <button type="button" class="ml-auto" onclick="location.pathname='/Home'">Cancelar</button>
+                </div>
+            }
+
+        </div>
+        <form>
+            <div id="roomDiv">
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+﻿@using TrendyShop.ViewModels
+@model SettingsViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="col-lg-4 mx-auto">
+    <div class="card">
+        <div class="card-header h2">Ajustes</div>
+        <div class="card-body">
+            <form asp-controller="Settings" asp-action="SetEmployeeSalary">
+                <div class="d-flex flex-column form-group">
+                    @Html.LabelFor(m => m.EmployeeSalary)
+                    @Html.TextBoxFor(m => m.EmployeeSalary, new { @type = "number", @step = "any", @id = "employeeSalaryInput" })
+                </div>
+            </form>
+            <form asp-controller="Settings" asp-action="SetRentCost">
+                <div class="d-flex flex-column form-group">
+                    @Html.LabelFor(m => m.RentCost)
+                    @Html.TextBoxFor(m => m.RentCost, new { @type = "number", @step = "any", @id = "rentCostInput" })
+                </div>
+            </form>
+            <form asp-controller="Settings" asp-action="SetRomanticTax">
+                <div class="d-flex flex-column form-group">
+                    @Html.LabelFor(m => m.RomanticTax)
+                    @Html.TextBoxFor(m => m.RomanticTax, new { @type = "number", @step = "any", @id = "romanticTaxInput" })
+                </div>
+            </form>
+            <form asp-controller="Settings" asp-action="SetLateHoursTax">
+                <div class="d-flex flex-column form-group">
+                    @Html.LabelFor(m => m.LateHoursTax)
+                    @Html.TextBoxFor(m => m.LateHoursTax, new { @type = "number", @step = "any", @id = "lateHoursTaxInput" })
+                </div>
+            </form>
+            <form asp-controller="Settings" asp-action="SetCompanionTax">
+                <div class="d-flex flex-column form-group">
+                    @Html.LabelFor(m => m.CompanionTax)
+                    @Html.TextBoxFor(m => m.CompanionTax, new { @type = "number", @step = "any", @id = "companionTaxInput" })
+                </div>
+            </form>
+        </div>
+        <div class="card-footer">
+            <button type="button" onclick="location.pathname = '/Home'">Atrás</button>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("employeeSalaryInput").select()
+</script>

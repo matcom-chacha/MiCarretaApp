@@ -1,0 +1,282 @@
+﻿@using TrendyShop.ViewModels
+@using Microsoft.AspNetCore.Identity
+@using TrendyShop.Utility
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+@model MainPageViewModel
+
+<h1 class="mx-auto" style="width:30%">Reservas del día</h1>
+
+<div class="row">
+    @* ------------------- Room #1 ------------------------------- *@
+    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+        <div class="card">
+            <h5 class="card-header">Habitación #1</h5>
+            <div class="card-body">
+                <ul class="list-group">
+                    @{ int i = 0;}
+                    @foreach (var shift_reservations_lodgings in Model.ShiftAndReservationsRoom1)
+                    {
+
+                        @if (shift_reservations_lodgings.Item2.Count == 0 && shift_reservations_lodgings.Item3.Count == 0)
+                        {
+                            <li class="list-group-item d-flex" style="background-color: rgb(240,240,250)">
+                                <h4 class="mb-0 custom-background-color">@shift_reservations_lodgings.Item1.InitialDate.ToString("hh:mm")-@shift_reservations_lodgings.Item1.FinalDate.ToString("hh:mm")</h4>
+                                <h4 class="mb-0 text-center">
+                                    @Html.ActionLink("Libre", "NewReservation", "Reservation", new { @initialDate = shift_reservations_lodgings.Item1.InitialDate, @finalDate = shift_reservations_lodgings.Item1.FinalDate, @roomId = 1 }, new { @title = "Nueva Reservación"})
+                                </h4>
+                            </li>
+                        }
+                        else
+                        {
+                            string shiftId = "shift1" + i.ToString();
+                            <li class="list-group-item">
+                                <h4 id=@shiftId style="background-color:beige" class="mb-0">@shift_reservations_lodgings.Item1.InitialDate.ToString("hh:mm")-@shift_reservations_lodgings.Item1.FinalDate.ToString("hh:mm")</h4>
+                                <hr />
+                                <div class="d-flex flex-column">
+
+                                    @foreach (var lodging in shift_reservations_lodgings.Item3)
+                                    {
+                                        var str = $"{lodging.ActualIDate.ToString("hh:mm")}-{lodging.ActualFDate.ToString("hh:mm")} {lodging.Customer.Name}";
+                                        <div class="d-flex">
+                                            <div class="mb-0">
+                                                @Html.ActionLink(str, "Details", "Lodging", new { roomId = lodging.RoomId, _date = lodging.Date })
+                                            </div>
+                                            <div class="ml-auto"><i class="fas fa-lock"></i></div>
+                                        </div>
+                                    }
+
+                                    @foreach (var reservation in shift_reservations_lodgings.Item2)
+                                    {
+                                        var str = $"{reservation.Date.ToString("hh:mm")}-{reservation.FinalDate.ToString("hh:mm")} {@reservation.Customer}";
+
+                                        <div class="d-flex">
+                                            @if (reservation.IsActive)
+                                            {
+                                                <div class="mb-0">
+                                                    @Html.ActionLink(str, "Details", "Lodging", new { roomId = reservation.RoomId, _date = reservation.Date })
+                                                </div>
+                                                <script>
+                                                    var shift = @shiftId;
+                                                    document.getElementById(shift.id).style = "background-color: rgb(253,63,61); color: rgb(250,250,250)";
+                                                </script>
+                                                <div class="ml-auto">
+                                                    @Html.ActionLink("", "Purchase", "Room", new { roomId = reservation.RoomId, _date = reservation.Date }, new { @class = "fas fa-bed", @title = "Cerrar Hospedaje" })
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="mb-0">
+                                                    @Html.ActionLink(str, "Details", "Reservation", new { roomId = reservation.RoomId, _date = reservation.Date })
+                                                </div>
+                                                <div class="ml-auto">
+                                                    @Html.ActionLink("", "Register", "Lodging", new { roomId = reservation.RoomId, _date = reservation.Date, }, new { @class = "fas fa-key", @title = "Iniciar" })
+                                                    @if (reservation.Romantic)
+                                                    {
+                                                        <i class="fas fa-heart"></i>
+                                                    }
+                                                    @if (reservation.IsConfirmed)
+                                                    {
+                                                        <i class="fas fa-check"></i>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </li>
+                        }
+                        i = i + 1;
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @* ------------------- Room #2 ------------------------------- *@
+    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+        <div class="card">
+            <h5 class="card-header">Habitación #2</h5>
+            <div class="card-body">
+                <ul class="list-group">
+                    @{ int j = 0;}
+                    @foreach (var shift_reservations_lodgings in Model.ShiftAndReservationsRoom2)
+                    {
+
+                        @if (shift_reservations_lodgings.Item2.Count == 0 && shift_reservations_lodgings.Item3.Count == 0)
+                        {
+                            <li class="list-group-item d-flex" style="background-color: rgb(240,240,250)">
+                                <h4 class="mb-0 custom-background-color">@shift_reservations_lodgings.Item1.InitialDate.ToString("hh:mm")-@shift_reservations_lodgings.Item1.FinalDate.ToString("hh:mm")</h4>
+                                <h4 class="mb-0 text-center">
+                                    @Html.ActionLink("Libre", "NewReservation", "Reservation", new { @initialDate = shift_reservations_lodgings.Item1.InitialDate, @finalDate = shift_reservations_lodgings.Item1.FinalDate, @roomId = 2 }, new { @title = "Nueva Reservación"})
+                                </h4>
+                            </li>
+                        }
+                        else
+                        {
+                            string shiftId = "shift2" + j.ToString();
+                            <li class="list-group-item">
+                                <h4 id=@shiftId style="background-color:beige" class="mb-0">@shift_reservations_lodgings.Item1.InitialDate.ToString("hh:mm")-@shift_reservations_lodgings.Item1.FinalDate.ToString("hh:mm")</h4>
+                                <hr />
+                                <div class="d-flex flex-column">
+
+                                    @foreach (var lodging in shift_reservations_lodgings.Item3)
+                                    {
+                                        var str = $"{lodging.ActualIDate.ToString("hh:mm")}-{lodging.ActualFDate.ToString("hh:mm")} {lodging.Customer.Name}";
+                                        <div class="d-flex">
+                                            <div class="mb-0">
+                                                @Html.ActionLink(str, "Details", "Lodging", new { roomId = lodging.RoomId, _date = lodging.Date })
+                                            </div>
+                                            <div class="ml-auto"><i class="fas fa-lock"></i></div>
+                                        </div>
+                                    }
+
+                                    @foreach (var reservation in shift_reservations_lodgings.Item2)
+                                    {
+                                        var str = $"{reservation.Date.ToString("hh:mm")}-{reservation.FinalDate.ToString("hh:mm")} {@reservation.Customer}";
+
+                                        <div class="d-flex">
+
+                                            @if (reservation.IsActive)
+                                            {
+                                                <div class="mb-0">
+                                                    @Html.ActionLink(str, "Details", "Lodging", new { roomId = reservation.RoomId, _date = reservation.Date })
+                                                </div>
+                                                <script>
+                                                    var shift = @shiftId;
+                                                    document.getElementById(shift.id).style = "background-color: rgb(253,63,61); color: rgb(250,250,250)";
+                                                </script>
+                                                <div class="ml-auto">
+                                                    @Html.ActionLink("", "Purchase", "Room", new { roomId = reservation.RoomId, _date = reservation.Date }, new { @class = "fas fa-bed", @title = "Cerrar Hospedaje" })
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="mb-0">
+                                                    @Html.ActionLink(str, "Details", "Reservation", new { roomId = reservation.RoomId, _date = reservation.Date })
+                                                </div>
+                                                <div class="ml-auto">
+                                                    @Html.ActionLink("", "Register", "Lodging", new { roomId = reservation.RoomId, _date = reservation.Date, }, new { @class = "fas fa-key", @title = "Iniciar" })
+                                                    @if (reservation.Romantic)
+                                                    {
+                                                        <i class="fas fa-heart"></i>
+                                                    }
+                                                    @if (reservation.IsConfirmed)
+                                                    {
+                                                        <i class="fas fa-check"></i>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </li>
+                        }
+                        j = j + 1;
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    @* ------------------- Room #3 ------------------------------- *@
+    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+        <div class="card">
+            <h5 class="card-header">Habitación #3</h5>
+            <div class="card-body">
+                <ul class="list-group">
+                    @{ int k = 0;}
+                    @foreach (var shift_reservations_lodgings in Model.ShiftAndReservationsRoom3)
+                    {
+
+                        @if (shift_reservations_lodgings.Item2.Count == 0 && shift_reservations_lodgings.Item3.Count == 0)
+                        {
+                            <li class="list-group-item d-flex" style="background-color: rgb(240,240,250)">
+                                <h4 class="mb-0 custom-background-color">@shift_reservations_lodgings.Item1.InitialDate.ToString("hh:mm")-@shift_reservations_lodgings.Item1.FinalDate.ToString("hh:mm")</h4>
+                                <h4 class="mb-0 text-center">
+                                    @Html.ActionLink("Libre", "NewReservation", "Reservation", new { @initialDate = shift_reservations_lodgings.Item1.InitialDate, @finalDate = shift_reservations_lodgings.Item1.FinalDate, @roomId = 3 }, new { @title = "Nueva Reservación"})
+                                </h4>
+                            </li>
+                        }
+                        else
+                        {
+                            string shiftId = "shift3" + k.ToString();
+                            <li class="list-group-item">
+                                <h4 id=@shiftId style="background-color:beige" class="mb-0">@shift_reservations_lodgings.Item1.InitialDate.ToString("hh:mm")-@shift_reservations_lodgings.Item1.FinalDate.ToString("hh:mm")</h4>
+                                <hr />
+                                <div class="d-flex flex-column">
+
+                                    @foreach (var lodging in shift_reservations_lodgings.Item3)
+                                    {
+                                        var str = $"{lodging.ActualIDate.ToString("hh:mm")}-{lodging.ActualFDate.ToString("hh:mm")} {lodging.Customer.Name}";
+                                        <div class="d-flex">
+                                            <div class="mb-0">
+                                                @Html.ActionLink(str, "Details", "Lodging", new { roomId = lodging.RoomId, _date = lodging.Date })
+                                            </div>
+                                            <div class="ml-auto"><i class="fas fa-lock"></i></div>
+                                        </div>
+                                    }
+
+                                    @foreach (var reservation in shift_reservations_lodgings.Item2)
+                                    {
+                                        var str = $"{reservation.Date.ToString("hh:mm")}-{reservation.FinalDate.ToString("hh:mm")} {@reservation.Customer}";
+
+                                        <div class="d-flex">
+
+                                            @if (reservation.IsActive)
+                                            {
+                                                <div class="mb-0">
+                                                    @Html.ActionLink(str, "Details", "Lodging", new { roomId = reservation.RoomId, _date = reservation.Date })
+                                                </div>
+                                                <script>
+                                                    var shift = @shiftId;
+                                                    document.getElementById(shift.id).style = "background-color: rgb(253,63,61); color: rgb(250,250,250)";
+                                                </script>
+                                                <div class="ml-auto">
+                                                    @Html.ActionLink("", "Purchase", "Room", new { roomId = reservation.RoomId, _date = reservation.Date }, new { @class = "fas fa-bed", @title = "Cerrar Hospedaje" })
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="mb-0">
+                                                    @Html.ActionLink(str, "Details", "Reservation", new { roomId = reservation.RoomId, _date = reservation.Date })
+                                                </div>
+                                                <div class="ml-auto">
+                                                    @Html.ActionLink("", "Register", "Lodging", new { roomId = reservation.RoomId, _date = reservation.Date, }, new { @class = "fas fa-key", @title = "Iniciar" })
+                                                    @if (reservation.Romantic)
+                                                    {
+                                                        <i class="fas fa-heart"></i>
+                                                    }
+                                                    @if (reservation.IsConfirmed)
+                                                    {
+                                                        <i class="fas fa-check"></i>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </li>
+                        }
+                        k = k + 1;
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<button onclick="location.pathname = 'Reservation/NewReservation'">Nueva Reserva</button>
+<button onclick="location.pathname = '/DailyClosing'">Cambio de turno</button>
+@if (User.IsInRole(SD.AdminEndUser))
+{
+    <button onclick="location.pathname = 'Stock/Index'">Cuadre</button>
+}

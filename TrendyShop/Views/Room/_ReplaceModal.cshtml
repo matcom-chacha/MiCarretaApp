@@ -1,0 +1,30 @@
+﻿@using TrendyShop.ViewModels
+@model RoomReplaceViewModel
+
+<div class="modal fade" id="rmodal" tabindex="-1" role="dialog" aria-labelledby="replaceModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="replaceModalLongTitle">Mover</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Replace" asp-controller="Storage">
+                    <div class=" form-group">
+                        @Html.LabelFor(l => l.SourceId):
+                        @Html.DropDownListFor(sivm => sivm.SourceId, new SelectList(Model.Rooms, "RoomId", "Name"),"", new { @class = "dropdown", @style = "padding: 10px; width:100%" })
+                    </div>
+
+                    <div class=" form-group mb-3">
+                        @Html.LabelFor(sivm => sivm.DestinationId):
+                        @Html.DropDownListFor(sivm => sivm.DestinationId, new SelectList(Model.Rooms, "RoomId", "Name"), "", new { @class = "dropdown", @style = "padding: 10px; width:100%"  })
+                    </div>
+                    <button type="submit">Continuar</button>
+                    <button type="button" data-dismiss="modal">Cerrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

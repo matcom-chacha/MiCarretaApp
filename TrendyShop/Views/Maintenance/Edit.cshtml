@@ -1,0 +1,43 @@
+﻿@model TrendyShop.Models.Maintenance
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-lg-4 mx-auto">
+    <div class="card">
+        <div class="card-header">Editar</div>
+        <div class="card-body">
+            @using (Html.BeginForm("SaveEdit", "Maintenance"))
+            {
+
+                <div class=" form-group">
+                    @Html.LabelFor(a => a.Description)
+                    @Html.TextBoxFor(a => a.Description, new { @class = "form-control", @id = "description" })
+                    @Html.ValidationMessageFor(a => a.Description)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(a => a.Cost)
+                    @Html.TextBoxFor(a => a.Cost, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(a => a.Cost)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(a => a.Date)
+                    @Html.TextBoxFor(a => a.Date, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(a => a.Date)
+                </div>
+
+                @Html.HiddenFor(a => a.MaintenanceId)
+
+                <button type="submit">Salvar</button>
+                <button type="button" onclick="location.pathname='/Maintenance'">Cancelar</button>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("description").select();
+</script>
+

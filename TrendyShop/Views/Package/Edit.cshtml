@@ -1,0 +1,85 @@
+﻿@using TrendyShop.ViewModels
+@model PackageViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <style>
+        input {
+            width: 50%;
+            border-color: grey;
+            border-width: thin;
+            border-radius: 2px
+        }
+    </style>        
+</head>
+<body>
+    <div>
+        <div class="col-lg-8 mb-4 mx-auto">
+            <div class="card ">
+                <div class="card-header h-100">
+                    <h4>Paquete del día</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered" style="margin-left:auto; margin-right:auto">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th></th>
+                        </tr>
+                        @foreach (var p in Model.PackGastronomics)
+                        {
+                            <tr>
+                                <td>@p.Name</td>
+                                <td>
+                                    <form asp-action="UpdateQuantity" asp-route-cost="@p.Cost" asp-route-name="@p.Name">
+                                        <input type="number" name="quantity" value="@p.Quantity" />
+                                    </form>
+                                </td>
+                                <td>@Html.ActionLink("", "Delete", "Package", new { cost = p.Cost, name = p.Name }, new { @class = "fas fa-trash-alt" })</td>
+
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <br />
+    <br />
+    <div>
+        <div class="col-lg-8 mb-4 mx-auto">
+            <div class="card ">
+                <div class="card-header h-100">
+                    <h4>Añadir al Paquete</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered" style="margin-left:auto; margin-right:auto">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Costo</th>
+                            <th>Cantidad</th>
+                        </tr>
+                        @foreach (var p in Model.Products)
+                        {
+                            <tr>
+                                <td>@p.Name</td>
+                                <td>@p.Cost</td>
+                                <td>
+                                    <form asp-action="Add" asp-route-cost="@p.Cost" asp-route-name="@p.Name">
+                                        <input type="number" step="any" name="quantity" />
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+</body>

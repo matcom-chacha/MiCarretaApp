@@ -1,0 +1,48 @@
+﻿@using TrendyShop.ViewModels
+@model AddExpProductViewModel
+@{
+    ViewData["Title"] = "AddExpProduct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-lg-4 mx-auto">
+    <div class="card">
+        <h3 class="card-header">
+            Añadir Producto Gastable
+        </h3>
+        <div class="card-body">
+            @using (Html.BeginForm("SaveExpProduct", "Storage"))
+            {
+                <div class=" form-group">
+                    @Html.LabelFor(e => e.ExpendableProduct.Name)
+                    @Html.TextBoxFor(e => e.ExpendableProduct.Name, new { @class = "form-control", @id = "name" })
+                    @Html.ValidationMessageFor(e => e.ExpendableProduct.Name)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(e => e.ExpendableProduct.Cost)
+                    @Html.TextBoxFor(e => e.ExpendableProduct.Cost, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(e => e.ExpendableProduct.Cost)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(e => e.ExpendableProduct.UnitOfMeasurement)
+                    @Html.TextBoxFor(e => e.ExpendableProduct.UnitOfMeasurement, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(e => e.ExpendableProduct.UnitOfMeasurement)
+                </div>
+
+                <div class=" form-group">
+                    @Html.LabelFor(e => e.Quantity)
+                    @Html.TextBoxFor(e => e.Quantity, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(e => e.Quantity)
+                </div>
+
+                <button type="submit">Insertar Producto</button>
+                <button type="button" onclick="location.pathname='/Storage'">Cancelar</button>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("name").select();
+</script>

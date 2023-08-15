@@ -1,0 +1,42 @@
+﻿@using TrendyShop.Models
+@{
+    ViewData["Title"] = "Registro de gastos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Tuple<string, List<HouseExpense>>
+
+
+
+<div class="col-lg-8 mb-4 mx-auto">
+    <div class="card ">
+        <div class="card-header h-100">
+            <h2>Registro de pagos de @Model.Item1</h2>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Cantidad</th>
+                </tr>
+
+                @foreach (var expense in Model.Item2)
+                {
+                    <tr>
+                        <td>@expense.Date.ToString("dd/MM/yy")</td>
+                        <td>@expense.Amount $</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="card-footer">
+            <button onclick="location.pathname='/HouseExpenses'">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+

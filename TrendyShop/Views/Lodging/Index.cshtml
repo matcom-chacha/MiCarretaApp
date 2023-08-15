@@ -1,0 +1,121 @@
+﻿@using TrendyShop.Models
+@{
+    ViewData["Title"] = "Reservaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model IEnumerable<LodgingAndPurchase>
+
+<h1 class="text-center">Reservaciones</h1>
+<div class="d-flex">
+    <div class="ml-auto mb-3">
+        <form asp-action="Index" asp-controller="Lodging" id="searchForm">
+            <input type="date" placeholder="Buscar" name="initialDate" id="initialDate" />
+            <a href="#"><i onclick="document.getElementById('searchForm').submit()" class="fas fa-search"></i></a>
+        </form>
+    </div>
+</div>
+
+@if (Model.Count() == 0)
+{
+    <div class="text-center">
+        <text> No se encontraron reservaciones cerradas en esta fecha</text>
+    </div>
+}
+@foreach (var l in Model)
+{
+    if (l.Purchase != null)
+    {
+        <div class="col-lg-10 mb-0 mx-auto">
+            <div class="card">
+                <div class="card-header d-flex">
+                    <h3 class="mb-0">#@l.Purchase.Key.LodgingNumber @l.Purchase.Key.Customer.Name</h3>
+                    <h3 class="ml-auto mb-0">Habitación #@l.Purchase.Key.RoomId</h3>
+                </div>
+                <div class="card-body d-flex">
+                    <div style="width:100%">
+                        <div class="d-flex flex-column mb-0" style="width:50%">
+                            <div class="d-flex">
+                                <h5 class="mb-0">Entrada: @l.Purchase.Key.ActualIDate.ToString("hh:mm tt")</h5>
+                                <h5 class="mb-0 ml-3">Salida: @l.Purchase.Key.ActualFDate.ToString("hh:mm tt")</h5>
+                            </div>
+                            <h5 class="mb-5">Fecha: @l.Purchase.Key.ActualIDate.ToString("dd/MM/yy")</h5>
+                            <div class="d-flex">
+                                <h5 class="mb-0">Renta: @l.Purchase.Key.RentCost $</h5>
+                                @if (l.Purchase.Key.ExtraCharge > 0)
+                                {
+                                    @*//esto deberia ser un link a los detalles de las incidencias o un modal*@
+                                    <h5 class="ml-3 mb-0">Ingreso por daños: @l.Purchase.Key.ExtraCharge$</h5>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="width:50%" align="right">
+                        <h4 style="background-color:rgb(240,240,250); border-radius:0.5px; padding:1px; width:100%" class="text-center">Consumo</h4>
+                        <table class="table-hover" style="width:100%">
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            @foreach (var item in l.Purchase)
+                            {
+                                float income = item.GastronomicProduct.Price * item.Amount;
+                                <tr>
+                                    <td>@item.Amount</td>
+                                    <td>@item.GastronomicProduct.Name</td>
+                                    <td class="text-right">@income $</td>
+                                </tr>
+                            }
+                        </table>
+                        <div class="d-flex">
+                            <hr />
+                            <h4 class="mb-0">Total: @l.Purchase.Key.Consumption $</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex">
+                    <h4 class="align-text-bottom mb-0" style="background-color: rgb(116,216,216); width:100px">Total: @l.Purchase.Key.TotalPrice $</h4>
+                    <p class="ml-auto">@l.Purchase.Key.Employee.Name</p>
+                </div>
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="col-lg-10 mb-3 mx-auto">
+            <div class="card">
+                <div class="card-header d-flex">
+                    <h3 class="mb-0">#@l.Lodging.LodgingNumber @l.Lodging.Customer.Name</h3>
+                    <h3 class="ml-auto mb-0">Habitación #@l.Lodging.RoomId</h3>
+                </div>
+                <div class="card-body d-flex">
+                    <div style="width:100%">
+                        <div class="d-flex flex-column" style="width:50%">
+                            <div class="d-flex">
+                                <h5 class="mb-0">Entrada: @l.Lodging.ActualIDate.ToString("hh:mm tt")</h5>
+                                <h5 class="mb-0 ml-3">Salida: @l.Lodging.ActualFDate.ToString("hh:mm tt")</h5>
+                            </div>
+                            <h5 class="mb-5">Fecha: @l.Lodging.ActualIDate.ToString("dd/MM/yy")</h5>
+                            <h5>Renta: @l.Lodging.RentCost$</h5>
+                            @if (l.Lodging.ExtraCharge > 0)
+                            {
+                                //esto deberia ser un link a los detalles de las incidencias o un modal
+                                <h4>Ingreso por daños: @l.Lodging.ExtraCharge$</h4>
+                            }
+                        </div>
+                    </div>
+                    <div style="width:50%" align="right">
+                        <h4 style="background-color:rgb(240,240,250); border-radius:0.5px; padding:1px; width:100%" class="text-center">Consumo</h4>
+                        <h4>Total: 0</h4>
+                    </div>
+                </div>
+                <div class="card-footer d-flex">
+                    <h4 class="align-text-bottom mb-0" style="background-color: rgb(116,216,216); width:100px">Total: @l.Lodging.TotalPrice $</h4>
+                    <p class="ml-auto">@l.Lodging.Employee.Name</p>
+                </div>
+            </div>
+        </div>
+    }
+}

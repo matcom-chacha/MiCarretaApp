@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+@using Microsoft.AspNetCore.Identity
+@using TrendyShop.Utility
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Mi Carreta</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/assets/vendor/bootstrap/css/bootstrap.min.css">
+    <link href="~/assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/assets/libs/css/style.css">
+    <link rel="stylesheet" href="~/assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+    @*@section scripts{
+            <script type="text/javascript">
+                $('.dropdown-toggle').dropdown()
+            </script>
+        }*@
+    <style>
+        table {
+            width: 50%;
+            background-color: whitesmoke;
+        }
+
+        h4 {
+            width: 50%;
+            background-color: darkslateblue#0e0c28;
+            border-radius: 5px;
+            padding: 5px
+        }
+
+        button {
+            color: white;
+            background-color: #0e0c28;
+            padding: 10px;
+            border-radius: 5px;
+            border-width: thin;
+        }
+        button:hover{
+            background-color: rgb(43, 38, 86);
+            /*color:green;*/
+        }
+        .blue-button {
+            background-color: rgb(116,216,216);
+            padding: 10px;
+            border-radius: 5px;
+            border-width: thin;
+        }
+
+        .red-button {
+            background-color: rgb(253,63,61);
+            padding: 10px;
+            border-radius: 5px;
+            border-width: thin;
+        }
+
+        .field-validation-error {
+            color: rgb(253,63,61);
+        }
+
+        .input-validation-error {
+            border: 2px solid rgb(253,63,61);
+            box-shadow: 0 0 0 0.2rem rgba(253,63,61,0.25);
+        }
+
+        .custom-background-color {
+            background-color: rgb(116,216,216);
+        }
+        /*.form-control:focus{
+           border-color: rgb(116,216,216);
+           box-shadow: 0 0 0 0.2rem rgba(116,216,216,0.25);
+        }*/
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Mi Carreta</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <button class="dropdown-toggle" style="color:black; background-color:white; border:hidden;" role="button" id="dropdownReservation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> Reservaciones <i class="fas fa-address-book"></i></button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownReservation">
+                                    <a class="dropdown-item " href="/Reservation">Pendientes</a>
+                                    <a class="dropdown-item" href="/Lodging">Cerradas <i class="fas fa-lock"></i></a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Storage" asp-action="Index">
+                                Almacén <i class="fas fa-warehouse"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Room" asp-action="Index">
+                                Habitaciones <i class="fas fa-bed"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="MoneyOperation" asp-action="Index">
+                                Caja <i class="fas fa-inbox"></i>
+                            </a>
+                        </li>
+                        <li class="d-flex ml-auto">
+                            <partial name="_LoginPartial" />
+                        </li>
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <button class="dropdown-toggle" style="color:black; background-color:white; border:hidden;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-list"></i> </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                    @if (User.IsInRole(SD.AdminEndUser))
+                                    {
+                                        <a class="dropdown-item " href="/Employee">Empleados</a>
+                                        <a class="dropdown-item " href="/Stock/PreviousStocks">Cuadres Anteriores</a>
+                                    }
+                                    <a class="dropdown-item" href="/Package">Paquete</a>
+                                    <a class="dropdown-item" href="/HouseExpenses">Servicios</a>
+                                    <a class="dropdown-item" href="/Incidence">Incidencias</a>
+                                    <a class="dropdown-item" href="/Maintenance">Mantenimiento</a>
+                                    @if (User.IsInRole(SD.AdminEndUser))
+                                    {
+                                        <a class="dropdown-item" href="/Statistics">Estadísticas Anuales</a>
+                                        <a class="dropdown-item" href="/Employee">Administrar Cuentas</a>
+                                    }
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @*<footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2020 - Mi Carreta - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>*@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/assets/vendor/jquery/jquery-3.3.1.min.js"></script>
+    <script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+    <script src="~/assets/vendor/slimscroll/jquery.slimscroll.js"></script>
+    <script src="~/assets/libs/js/main-js.js"></script>
+    <script type="text/javascript">
+        $('.dropdown-toggle').dropdown()
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

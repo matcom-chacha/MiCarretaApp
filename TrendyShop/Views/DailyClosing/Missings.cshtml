@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Missings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model IList<MissingRecord>
+
+@if (Model.Count() > 0)
+{
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">Faltantes hasta la fecha</div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Faltante</th>
+                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Amount</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+}

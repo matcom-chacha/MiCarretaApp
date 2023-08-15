@@ -1,0 +1,110 @@
+﻿@using TrendyShop.ViewModels
+@{
+    ViewData["Title"] = "Consumo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model PurchaseViewModel
+
+
+@using (Html.BeginForm("FinishLodging", "Lodging", FormMethod.Post, new { id = "purchaseForm" }))
+{
+    <div class="col-lg-6 mx-auto">
+        <div class="card">
+            <div class="card-header">Registro de consumo</div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        @*se puede poner en la tabla la cantidad que quedan en hab*@
+                    </tr>
+                    @for (int i = 0; i < Model.RoomProducts.Count; i++)
+                    {
+                        //var Id = "amount_" + i.ToString()
+                        <tr>
+                            <td>@Model.RoomProducts[i].Name</td>
+                            <td>@Model.RoomProducts[i].GastronomicProduct.Price $</td>
+                            <td> <input asp-for="AmountToMove[i]" type="number"></td>
+                        </tr>
+                        @Html.HiddenFor(rvm => rvm.RoomProducts[i].Name)
+                        @Html.HiddenFor(rvm => rvm.RoomProducts[i].Cost)
+                        @Html.HiddenFor(rvm => rvm.RoomProducts[i].Amount)
+                    }
+                </table>
+            </div>
+            <div class="card-footer">
+                <button type="button" onclick="validateForm()">Listo</button>
+                <button type="button" onclick="location.pathname ='/Home'">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+
+    @Html.HiddenFor(rvm => rvm.InitialDate)
+    @Html.HiddenFor(rvm => rvm.RoomId)
+
+    @*<button type="submit">Listo</button>*@
+}
+
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalTitle">Confirmación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Está seguro que desea registrar esta compra?
+                <ul>
+
+                    @for (int i = 0; i < @Model.RoomProducts.Count; i++)
+                    {
+                        if (@Model.AmountToMove[i] > 0)
+                        {
+                            <li>@Model.RoomProducts[i].Name @Model.RoomProducts[i].Cost : @Model.AmountToMove[i]</li>
+                        }
+                    }
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="modalSubmit()">Continuar</button>
+                <button type="button" class="red-button" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("AmountToMove_0_").select();
+    function validateForm() {
+        var errorFound = false;
+        for (var i = 0; i < @Model.RoomProducts.Count; i++) {
+            var id = 'AmountToMove_' + i + '_';
+            console.log(id);
+            var input = document.getElementById(id);
+            var amount = document.getElementById('RoomProducts_' + i + '__Amount');
+            console.log(amount.value);
+            console.log(input.value > amount.value);
+           if (parseFloat(input.value) < 0 || parseFloat(input.value) > parseFloat(amount.value)) {
+                errorFound = true;
+                input.style.borderColor = "red";
+            }
+            else {
+                input.style.borderColor = "black";
+            }
+        }
+
+        if (errorFound) {
+            alert("Chequee que el valor de compra sea un número positivo menor que la cantidad disponible en habitación");
+        }
+        else {
+            $('#confirmationModal').modal()
+        }
+    }
+    function modalSubmit() {
+        document.getElementById('purchaseForm').submit();
+    }
+</script>

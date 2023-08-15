@@ -1,0 +1,547 @@
+﻿@using TrendyShop.ViewModels
+@{
+    ViewData["Title"] = "FinishLodging";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model CloseLodgingViewModel
+
+<div class="col-lg-6 h-auto mb-0 mx-auto">
+    <div class="card">
+        <h1 class="card-header text-center">Cierre de Hospedaje</h1>
+        <div class="card-body">
+            @using (Html.BeginForm("SaveLodgingRecords", "Lodging", FormMethod.Post, new { id = "clform" }))
+            {
+                <div class="mb-4">
+
+                    @if (Model.Lodging.Romantic)
+                    {
+                        <h4>Decoración Romántica <i class="fas fa-check"></i></h4>
+                    }
+
+                    <div class=" form-group">
+                        @Html.LabelFor(l => l.Lodging.RentCost)
+                        @Html.TextBoxFor(l => l.Lodging.RentCost, new { @class = "form-control", @id = "Lodging_RentCost", @type = "number" })
+                        @Html.ValidationMessageFor(l => l.Lodging.RentCost)
+                    </div>
+
+                    @*<div class=" form-group mb-4">
+                            @Html.LabelFor(l => l.Lodging.ActualFDate)
+                            @Html.TextBoxFor(l => l.Lodging.ActualFDate, new { @class = "form-control", @type = "datetime-local",})
+                            @Html.ValidationMessageFor(l => l.Lodging.ActualFDate)
+                        </div>*@
+                    <div class="form-group">
+                        <label for="FinalDate">Fecha de Salida</label>
+                        <input type="datetime-local" id="FinalDate" name="FinalDate" class="form-control" value=@Model.DateFormat />
+                    </div>
+                    <div class=" checkbox">
+                        @Html.LabelFor(clvm => clvm.Lodging.Customer.IsBlocked)
+                        @Html.CheckBoxFor(clvm => clvm.Lodging.Customer.IsBlocked)
+                        @Html.ValidationMessageFor(clvm => clvm.Lodging.Customer.IsBlocked)
+                    </div>
+                </div>
+
+                @*<input type="text" name="fname" required>*@
+
+                @if (Model.Purchase.Count == 0)
+                {
+                    <label>Consumo - </label>
+                }
+                else
+                {
+                    <table class="table table-bordered mb-3">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Total</th>
+                        </tr>
+                        @for (int i = 0; i < Model.Purchase.Count; i++)
+                        {
+                            var purchase = @Model.Purchase[i];
+                            Model.Lodging.Consumption += purchase.Amount * purchase.GastronomicProduct.Price;
+                            var total = purchase.Amount * purchase.GastronomicProduct.Price;
+
+                            <tr>
+                                <td>@purchase.Name</td>
+                                <td class="text-right">@purchase.Amount</td>
+                                <td class="text-right">@purchase.GastronomicProduct.Price $</td>
+                                <td class="text-right">@total $</td>
+
+                            </tr>
+                            @Html.HiddenFor(clvm => clvm.Purchase[i].Cost)
+                            @Html.HiddenFor(clvm => clvm.Purchase[i].Name)
+                            @Html.HiddenFor(clvm => clvm.Purchase[i].Amount)
+
+                        }
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-right" style="background-color: rgb(116,216,216)">Consumo: @Model.Lodging.Consumption $</td>
+                        </tr>
+                    </table>
+                }
+
+                @Html.HiddenFor(clvm => clvm.Lodging.RoomId)
+                @Html.HiddenFor(clvm => clvm.Lodging.Date)
+                @Html.HiddenFor(clvm => clvm.Lodging.IsDouble)
+                @Html.HiddenFor(clvm => clvm.Lodging.RentCost)
+                @Html.HiddenFor(clvm => clvm.Lodging.ExtraCharge)
+                @Html.HiddenFor(clvm => clvm.Lodging.Consumption)
+                @Html.HiddenFor(clvm => clvm.Lodging.Customer.CustomerId)
+                @Html.HiddenFor(clvm => clvm.Lodging.Customer.Name)
+                @Html.HiddenFor(clvm => clvm.TotalPrice)
+            }
+
+            <div class="mb-3">
+                <label class="col-form-label" for="SelectedIncidence_IncidenceId">Seleccione una incidencia</label>
+
+                <div class="input-group">
+                    <select style="width:50%" id="SelectedIncidence_IncidenceId">
+                        <option value="0"></option>
+                        @foreach (var item in Model.Incidences)
+                        {
+                            var text = @item.Subject + "/ " + @item.Price + "$";
+                            <option value="@item.IncidenceId">@text</option>
+                        }
+                    </select>
+
+                    <button class="ml-1" onclick="addIncidenceFunc()">Añadir</button>
+                    <button class="ml-1" type="button" data-toggle="modal" data-target="#nimodal">Crear Incidencia</button>
+
+                </div>
+            </div>
+
+            <div id="inctable_container">
+
+            </div>
+            @*<table class="table table-bordered" id="incTable">
+                    <tr>
+                        <th>Incidencia</th>
+                        <th>Descripción</th>
+                        <th>Costo</th>
+                        <th></th>
+                    </tr>
+                </table>*@
+
+            @*@if (@Model.Lodging.ExtraCharge > 0)
+                {
+                    var total = @Model.Lodging.ExtraCharge + @Model.Lodging.Consumption + @Model.Lodging.RentCost;
+                    <h4 id="totalHeader">Total: @total</h4>
+                }
+                else if (@Model.Lodging.Consumption > 0)
+                {
+                    var total = @Model.Lodging.Consumption + @Model.Lodging.RentCost;
+                    <h4 id="totalHeader">Total: @total</h4>
+                }
+                else
+                {
+                    var total = @Model.Lodging.RentCost;
+                    <h4 id="totalHeader">Total: @total</h4>
+                }*@
+
+            <div class="d-flex">
+                <button onclick="validateCLForm()">Guardar</button>
+                @*------------------------------------------------------- REVISAR ESTE CANCELAR*@
+                <form asp-action="Purchase" asp-controller="Room" asp-route-roomId=@Model.Lodging.RoomId asp-route-_date=@Model.Lodging.Date>
+                    <button class="ml-1" type="submit">Cancelar</button>
+                </form>
+            </div>
+
+            <div class="modal fade" id="nimodal" tabindex="-1" role="dialog" aria-labelledby="newIncidenceModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="newIncidenceModalLongTitle">Nueva Incidencia</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form asp-action="UpdateIncidenceList">
+                                <div class=" form-group">
+                                    @Html.LabelFor(clvm => clvm.SelectedIncidence.Subject)
+                                    @Html.TextBoxFor(clvm => clvm.SelectedIncidence.Subject, new { @class = "form-control", @id = "SelectedIncidence_Subject" })
+                                    @Html.ValidationMessageFor(clvm => clvm.SelectedIncidence.Subject)
+                                </div>
+
+                                <div class=" form-group">
+                                    @Html.LabelFor(clvm => clvm.SelectedIncidence.Price)
+                                    @Html.TextBoxFor(clvm => clvm.SelectedIncidence.Price, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(clvm => clvm.SelectedIncidence.Price)
+                                </div>
+
+                                <div class=" form-group">
+                                    @Html.LabelFor(clvm => clvm.SelectedIncidence.Description)
+                                    @Html.TextBoxFor(clvm => clvm.SelectedIncidence.Description, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(clvm => clvm.SelectedIncidence.Description)
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button onclick="validateModal()">Guardar</button>
+                            <button class="red-button" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="clmodal" tabindex="-1" role="dialog" aria-labelledby="closeLodgingModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="closeLodgingModalLongTitle">Está seguro que desea cerrar este hospedaje?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body d-flex">
+                            <h4 class="ml-3" id="total_modal"></h4>
+                            <h4 class="ml-3">Prepagado: @Model.Lodging.Prepaid</h4>
+                            <h4 class="ml-3" id="charge"></h4>
+
+                            @*@if (Model.Lodging.Prepaid > 0)
+                                {
+                                    if (Model.TotalPrice - @Model.Lodging.Prepaid < 0)//2:9
+                                    {
+                                        var toReturn = Model.Lodging.Prepaid - Model.TotalPrice;//2:9
+                                        <h4>Prepagado: @Model.Lodging.Prepaid</h4>
+                                        <h4 id="change">A devolver: @toReturn</h4>
+                                    }
+                                    else
+                                    {
+                                        var toComplete = Model.TotalPrice - Model.Lodging.Prepaid;//2:9
+                                        <h4>Prepagado: @Model.Lodging.Prepaid</h4>
+                                        <h4 id="miss">Completar con: @toComplete</h4>
+                                    }
+                                }*@
+                        </div>
+                        <div class="modal-footer">
+                            <button onclick="submitForm()">Continuar</button>
+                            <button class="red-button" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("Lodging_RentCost").select();
+    var newIncidencesNumber = 0;
+    var descriptionDict = {};
+
+    function removeRow(obutton) {
+    //function removeRow(id) {
+        //console.log(id);
+        //obutton = document.getElementById(id);
+        var table = document.getElementById('incTable');
+
+        var extraCharge = document.getElementById('Lodging_ExtraCharge');
+        var extraChargeValue = parseFloat(extraCharge.value);
+        var price = table.rows[obutton.parentNode.parentNode.rowIndex].cells[1].innerHTML;
+        var rowPrice = parseFloat(price.split("$")[0]); /*era 2, pasa a 1, ponerle el parseFloat*/
+        var dif = extraChargeValue - rowPrice;
+        extraCharge.value = dif;
+        //document.getElementById('IncidencesPlusValue').innerHTML = "Incidencias: " + extraCharge.value;
+
+        if (document.getElementById('Lodging_Consumption').value == null) {
+            document.getElementById('Lodging_Consumption').value = 0;
+        }
+        var total = parseFloat(document.getElementById('Lodging_RentCost').value) + parseFloat(document.getElementById('Lodging_Consumption').value) + dif;
+        document.getElementById('TotalPrice').value = total;/*----------------no se va a actualizar el total en niguna vista--------------------*/
+        //document.getElementById('totalHeader').innerHTML = "Total: " + total;
+        table.deleteRow(obutton.parentNode.parentNode.rowIndex);
+        if (table.rows.length == 1) {
+            table.parentNode.removeChild(table);
+        }
+    }
+
+    function createIncidenceFunc() {
+        var newIncSubject = document.getElementById('SelectedIncidence_Subject').value;
+        var newIncPrice = parseFloat(document.getElementById('SelectedIncidence_Price').value);/*----------------new incidencePrice con $!!!! arriba estaba igual---------*/
+        var newIncDescription = document.getElementById('SelectedIncidence_Description').value;
+
+        if (newIncSubject == "" || newIncPrice <= 0 || newIncDescription == "")
+            return;//esto se puede borrar aqui esto nunca va a psar porque a se valida
+
+        var table = document.getElementById('incTable');
+        if (table == null) {
+            table = createIncidenceTable();
+        }
+        var row = table.insertRow(-1);
+        newIncidencesNumber = newIncidencesNumber + 1;
+        row.id =  @Model.GreatestId + newIncidencesNumber;
+
+        var incidenceCell = row.insertCell(0);
+        //var descriptionCell = row.insertCell(1);
+        var priceCell = row.insertCell(1);
+        var buttonCell = row.insertCell(2);
+        descriptionDict[row.id] = newIncDescription;
+
+        incidenceCell.innerHTML = newIncSubject;
+        //descriptionCell.innerHTML = newIncDescription
+        priceCell.innerHTML = newIncPrice + "$";
+
+        var button = document.createElement("a");
+        //button.setAttribute("type", "button");
+        //button.setAttribute("value", "eliminar");
+        button.innerHTML = "<i class='fas fa-trash-alt'></i>"
+        button.setAttribute("href","#")
+        button.setAttribute("onclick", "removeRow(this)");
+        buttonCell.appendChild(button);
+
+        var dropDownList = document.getElementById("SelectedIncidence_IncidenceId");
+        var newOption = document.createElement("OPTION");
+        newOption.innerHTML = newIncSubject + "/ " + newIncPrice + "$";/*fuera $*/
+        newOption.value = row.id;
+        dropDownList.options.add(newOption);
+
+        var extraCharge = document.getElementById('Lodging_ExtraCharge');
+        var extraChargeValue = parseFloat(extraCharge.value);
+        if (extraCharge.value == "") {
+            extraChargeValue = 0;
+        }
+        //var sum = extraChargeValue + parseFloat(newIncPrice);
+        var sum = extraChargeValue + newIncPrice;
+
+        extraCharge.value = sum;
+        //document.getElementById('IncidencesPlusValue').innerHTML = "Incidencias: " + extraCharge.value;
+
+        if (document.getElementById('Lodging_Consumption').value == null) {
+            document.getElementById('Lodging_Consumption').value = 0;
+        }
+        var total = parseFloat(document.getElementById('Lodging_RentCost').value) + parseFloat(document.getElementById('Lodging_Consumption').value) + sum;
+        document.getElementById('TotalPrice').value = total;//----------------new--------------------
+        //document.getElementById('totalHeader').innerHTML = "Total: " + total;
+
+        document.getElementById('SelectedIncidence_Subject').value = "";
+        document.getElementById('SelectedIncidence_Price').value = 0;
+        document.getElementById('SelectedIncidence_Description').value = "";
+
+        //var modal = document.getElementById("nimodal");
+        //modal.modal('hide');
+        $('#nimodal').modal('hide');
+        $(".modal-backdrop").remove();
+
+    }
+
+    function addIncidenceFunc() {
+        var dropDownList = document.getElementById("SelectedIncidence_IncidenceId");
+        var selectedText = dropDownList.options[dropDownList.selectedIndex].text;
+        if (selectedText == "") {
+            return;
+        }
+        var selectedTextArray = selectedText.split("/ ");
+        selectedTextArray[1] = selectedTextArray[1].split("$")[0];
+        var selectedValue = dropDownList.options[dropDownList.selectedIndex].value;
+
+        var table = document.getElementById('incTable');
+        if (table == null) {
+            table = createIncidenceTable();
+        }
+
+        for (var i = 1, row; row = table.rows[i]; i++) {
+            col = row.cells[0].innerHTML;
+            if (selectedTextArray[0] == col)
+                return;
+        }
+
+        var row = table.insertRow(-1);
+        row.id = selectedValue;
+
+        var incidenceCell = row.insertCell(0);
+        //var descriptionCell = row.insertCell(1);
+        var priceCell = row.insertCell(1);
+        var buttonCell = row.insertCell(2);
+
+        incidenceCell.innerHTML = selectedTextArray[0];
+        priceCell.innerHTML = selectedTextArray[1] + "$";
+
+        var button = document.createElement("a");
+        //button.setAttribute("type", "button");
+        //button.setAttribute("value", "eliminar");
+        button.innerHTML = "<i class = 'fas fa-trash-alt'></i>"
+        button.setAttribute("onclick", "removeRow(this)");
+        button.setAttribute("href", "#");
+        buttonCell.appendChild(button);
+
+        var extraCharge = document.getElementById('Lodging_ExtraCharge');
+        var extraChargeValue = parseFloat(extraCharge.value);
+        if (extraCharge.value == "") {
+            extraChargeValue = 0;
+        }
+        //------------------------------------------------en selected text array ahora el price esta en 1
+        var sum = extraChargeValue + parseFloat(selectedTextArray[1]);
+        extraCharge.value = sum;
+        //document.getElementById('IncidencesPlusValue').innerHTML = "Incidencias: " + extraCharge.value;
+
+        if (document.getElementById('Lodging_Consumption').value == null) {
+            document.getElementById('Lodging_Consumption').value = 0;
+        }
+        var total = parseFloat(document.getElementById('Lodging_RentCost').value) + parseFloat(document.getElementById('Lodging_Consumption').value) + sum;
+        document.getElementById('TotalPrice').value = total;//----------------new--------------------
+        //document.getElementById('totalHeader').innerHTML = "Total: " + total;
+
+        dropDownList.selectedIndex = 0;
+    }
+
+    function closeLodgFunction() {
+        var table = document.getElementById('incTable');
+        var form = document.getElementById('clform');
+
+        if (table != null) {
+            for (var i = 1, row; row = table.rows[i]; i++) {
+                var index = i - 1;
+
+                var idInput = document.createElement("INPUT");
+                idInput.setAttribute("type", "hidden");
+                idInput.setAttribute("value", row.id);
+                idInput.setAttribute("name", "IncidencesToBind[" + index + "].IncidenceId");
+                form.appendChild(idInput);
+
+                var description = descriptionDict[row.id];
+                if (description == undefined) {
+                    description = "";
+                }
+
+                for (var j = 0, col; col = row.cells[j]; j++) {
+                    var input = document.createElement("INPUT");
+                    input.setAttribute("type", "hidden");
+                    if (j == 0) {
+                        input.setAttribute("value", col.innerHTML);
+                        input.setAttribute("name", "IncidencesToBind[" + index + "].Subject");
+                    }
+                    //-----------------------------------------------
+                    else if (j == 2) {
+                        input.setAttribute("value", description);
+                        input.setAttribute("name", "IncidencesToBind[" + index + "].Description");
+                    }
+                    else {
+                        var price = (col.innerHTML).split("$")[0]
+                        input.setAttribute("value", price);
+                        console.log("enter else de close lodging function");
+                        input.setAttribute("name", "IncidencesToBind[" + index + "].Price");
+                    }
+                    form.appendChild(input);
+                }
+            }
+        }
+        //document.getElementById("clmodal").modal('show');
+        $('#clmodal').modal()
+        calculateChange();
+        //form = document.getElementById('clform');
+        //console.log(form);
+        //form.submit();
+    }
+    function validateModal() {
+        var newIncSubject = document.getElementById('SelectedIncidence_Subject').value;
+        var newIncPrice = parseFloat(document.getElementById('SelectedIncidence_Price').value);
+        var newIncDescription = document.getElementById('SelectedIncidence_Description').value;
+        //-------------------------hacerle parse float al incPrice
+        if (newIncSubject == "") {
+            alert("Debe especificar asunto");
+            return false;
+        }
+        if (isNaN(newIncPrice) || newIncPrice <= 0) {
+            alert("Debe especificar un valor positivo por daños");
+            return false;
+        }
+        if (newIncDescription == "") {
+            alert("Debe agregar una pequeña descripcion");
+            return false;
+        }
+
+        createIncidenceFunc();
+    }
+    function validateCLForm() {/*------------parse float*/
+        var rentCostValue = parseFloat(document.getElementById('Lodging_RentCost').value);
+        var rentCostAFDate = document.getElementById('FinalDate').value;
+
+        if (rentCostValue == "" || isNaN(rentCostValue) || rentCostValue < 5) {//validar si es null con required?
+            alert("Debe especificar un número > 5 para costo por renta");
+            return false;
+        }
+        if (rentCostAFDate == "") {//que mas es neceario validar?
+            alert("Debe especificar fecha de cierre");
+            return false;
+        }
+
+        closeLodgFunction();
+    }
+
+    function calculateChange() {
+        var total = document.getElementById('TotalPrice').value;
+
+            var consumption = document.getElementById('Lodging_Consumption');
+            var extraCharge = document.getElementById('Lodging_ExtraCharge');
+
+            if (extraCharge.value == "") {
+                extraCharge.value = 0;
+            }
+            if (consumption.value == null) {
+               consumption.value = 0;
+            }
+
+            var total = parseFloat(document.getElementById('Lodging_RentCost').value) + parseFloat(consumption.value) + parseFloat(extraCharge.value);
+
+            document.getElementById('TotalPrice').value = total;
+
+        var prepaid = @Model.Lodging.Prepaid;
+        var dif = total - prepaid;
+        document.getElementById('total_modal').innerHTML = "Total: " + total + " $";
+
+        if (dif >= 0) {
+            document.getElementById('charge').innerHTML = "A cobrar: " + dif + " $";
+        }
+        else {
+            var toReturn = prepaid - total;
+            document.getElementById('charge').innerHTML = "Devolver: " + toReturn + " $";
+        }
+    }
+    //function updateTotalRentCost() {
+    //    console.log("entre a updatetotal");
+    //    var rentCost = document.getElementById('Lodging_RentCost').value;
+    //    var consumption = document.getElementById('Lodging_Consumption').value;
+    //    var extraCharge = document.getElementById('Lodging_ExtraCharge').value
+
+    //    if (consumption == null)
+    //        consumption = 0;
+    //    if (extraCharge == null)
+    //        extraCharge = 0;
+    //    if ( rentCost == null)
+    //        rentCost = 0;
+
+    //    var total = parseFloat(rentCost) + parseFloat(consumption) + parseFloat(extraCharge);
+    //    document.getElementById('TotalPrice').value = total;//----------------new--------------------
+    //    document.getElementById('totalHeader').innerHTML = "Total: " + total;
+    //}
+    function submitForm() {
+        document.getElementById('clform').submit();
+    }
+    function createIncidenceTable() {@*----------------------------new----------------------------*@
+        var table = document.createElement("table");
+
+        table.id = "incTable";
+        table.classList.add("table");
+        table.classList.add("table-bordered");
+        table.classList.add("mb-3");
+
+        var tr = table.insertRow();
+        var incCell = tr.insertCell(); /*esto lleva numero no?*/
+        var pCell = tr.insertCell();
+        var bCell = tr.insertCell();
+
+        incCell.innerHTML = "Incidencia";
+        pCell.innerHTML = "Precio";
+        bCell.innerHTML = "";
+
+        var container = document.getElementById('inctable_container');
+        container.appendChild(table);
+
+        return table;
+    }
+</script>

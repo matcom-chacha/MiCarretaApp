@@ -1,0 +1,23 @@
+﻿@using TrendyShop.Models
+@{
+    ViewData["Title"] = "StorageRow";
+}
+@model StorageRow
+
+<h1>StorageRow</h1>
+
+<div class="row">
+    <div class="col-lg-12 mb-4">
+        <div class="card h-100">
+            <h4 class="card-header">@Model.Name</h4>
+            <div class="card-body">
+                <p class="card-text">Precio: @Model.Cost</p>
+                <p class="card-text">Cantidad en almacén: @Model.AmountAvailable</p>
+                <p class="card-text">Cantidad en habitaciones: @Model.AmountInRooms</p>
+            </div>
+            <div class="card-footer">
+                @Html.ActionLink("Editar", "Refill", "Storage", new { productCost = @Model.Cost, productName = @Model.Name, })
+            </div>
+        </div>
+    </div>
+</div>

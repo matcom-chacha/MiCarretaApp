@@ -1,0 +1,139 @@
+﻿@using TrendyShop.ViewModels
+@{
+    ViewData["Title"] = "DailyClosing/Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@model DailyClosingDetailsViewModel
+
+<div class="col-lg-8 mx-auto">
+    <div class="card">
+        <div class="card-header d-flex">
+            Cierre del día: @Model.Date.ToString("dd/MM hh:mm")
+            <div class="ml-auto">Empleado: @Model.Employee.Name</div>
+        </div>
+        <div class="card-body">
+            @if (Model.DailyClosingRows.Count() > 0)
+            {
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cocina</th>
+                        <th>H1</th>
+                        <th>H2</th>
+                        <th>H3</th>
+                        <th>Consumo</th>
+                        <th>Repuesto</th>
+                        <th>Total</th>
+                    </tr>
+                    @foreach (var item in Model.DailyClosingRows)
+                    {
+                        <tr>
+                            <td>@item.Name, @item.Cost</td>
+                            <td>@item.AmountInStorage</td>
+                            <td>@item.Room1</td>
+                            <td>@item.Room2</td>
+                            <td>@item.Room3</td>
+                            <td>@item.ConsuptionSincePreviuosClosing</td>
+                            <td>@item.Replenished</td>
+                            <td>@item.TotalAmount</td>
+                        </tr>
+                    }
+                </table>
+            }
+        </div>
+        <div class="card-footer d-flex">
+            @if (!Model.Approved)
+            {
+                <button>
+                    @Html.ActionLink("Edit", "Edit", "DailyClosing", new { dateOfClosingTicks = @Model.Date.Ticks }, null)
+                </button>
+            }
+            <button class="ml-auto" type="button" onclick="location.pathname='/DailyClosing'">Cancelar</button>
+
+        </div>
+    </div>
+</div>
+
+@if (Model.Missings.Count() > 0)
+{
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">Faltantes hasta la fecha</div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Faltante</th>
+                    </tr>
+                    @foreach (var item in Model.Missings)
+                    {
+                        <tr>
+                            <td>@item.Name, @item.Cost</td>
+                            <td>@item.Amount</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.MissingsOfTheDay.Count() > 0)
+{
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class=" card-header">Faltantes reportados en el día</div>
+            <div class="card-body">
+
+                <table class="table table-bordered" style="margin-left:auto; margin-right:auto">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Faltante</th>
+                    </tr>
+                    @foreach (var item in Model.MissingsOfTheDay)
+                    {
+                        <tr>
+                            <td>@item.Name, @item.Cost</td>
+                            <td>@item.Amount</td>
+
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.Repositions.Count() > 0)
+{
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">Reposiciones del día</div>
+            <div class="card-body">
+                <table class="table table-bordered" style="margin-left:auto; margin-right:auto">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Pagada</th>
+                    </tr>
+                    @foreach (var item in Model.Repositions)
+                    {
+                        <tr>
+                            <td>@item.Name, @item.Cost</td>
+                            <td>@item.Amount</td>
+                            @if (@item.Paid)
+                            {
+                                <td> Sí</td>
+                            }
+                            else
+                            {
+                                <td>No</td>
+                            }
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+}

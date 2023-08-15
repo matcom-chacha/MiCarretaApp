@@ -1,0 +1,70 @@
+﻿@using TrendyShop.Models
+@{
+    ViewData["Title"] = "Reservaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model IEnumerable<Reservation>
+
+
+@if (Model.Count() == 0)
+{
+    <div class="text-center">
+        <text> No hay reservaciones pendientes</text>
+    </div>
+}
+
+@foreach (Reservation l in Model)
+{
+    <div class="col-md-6 mx-auto">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5> Habitación #@l.RoomId</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-column">
+                    <h5> Cliente: @l.Customer</h5>
+                    <div class="d-flex">
+                        <h5 class="mb-0">Entrada: @l.Date.ToString("hh:mm tt")</h5>
+                        <h5 class="ml-4">Salida: @l.FinalDate.ToString("hh:mm tt")</h5>
+                        <h5 class="ml-4">Fecha: @l.Date.ToString("dd/MM/yyyy")</h5>
+                    </div>
+                    @if (l.IsConfirmed)
+                    {
+                        <h5 class="mb-0">Confirmado <i class="fas fa-check"></i></h5>
+                        @*<div class="ml-auto">
+                                <button style="background-color: white ">
+                                    @Html.ActionLink("Cancelar", "CancelConfirm", "Reservation", new { roomId = l.RoomId, date = l.Date })
+                                </button>
+                            </div>*@
+                    }
+                    else
+                    {
+                        <h5>Sin Confirmar</h5>
+                        @*<div class="ml-auto">
+                                <button style="background-color: white ">
+                                    @Html.ActionLink("Confirmar", "Confirm", "Reservation", new { roomId = l.RoomId, date = l.Date })
+                                </button>
+                            </div>*@
+                    }
+                    @if (l.Romantic)
+                    {
+                        <h5 class="mb-0">Decoración Romántica <i class="fas fa-heart"></i></h5>
+                    }
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex">
+                    <form class="mb-0" asp-action="Register" asp-controller="Lodging" asp-route-roomId="@l.RoomId" asp-route-_date="@l.Date">
+                        <button type="submit">Iniciar</button>
+                    </form>
+                    <form class="ml-1" asp-action="Edit" asp-controller="Reservation" asp-route-roomId="@l.RoomId" asp-route-_date="@l.Date">
+                        <button type="submit">Editar</button>
+                    </form>
+                    <form class="ml-auto" asp-action="Delete" asp-controller="Reservation" asp-route-roomId="@l.RoomId" asp-route-_date="@l.Date">
+                        <button class="red-button" type="submit">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

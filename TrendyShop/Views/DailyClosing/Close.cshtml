@@ -1,0 +1,717 @@
+﻿@{
+    ViewData["Title"] = "DailyClosing";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@model TrendyShop.ViewModels.DailyClosingViewModel
+
+
+<style>
+    .mydisplay {
+        display: none;
+    }
+</style>
+<div class="col-lg-8 mx-auto">
+    <div class="card">
+        <div class="card-header">
+            Cierre del día @Model.Date.ToString("dd/MM hh:mm")
+            <div class="ml-auto">Empleado: @Model.Employee.Name</div>
+        </div>
+        <div class="card-body">
+            <form asp-action="SaveClosing" asp-controller="DailyClosing" id="dcForm">
+                <table id="mainTable" class="table table-bordered">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cierre pasado</th>
+                        <th>Cocina</th>
+                        <th>H1</th>
+                        <th>H2</th>
+                        <th>H3</th>
+                        <th>Consumo</th>
+                        <th>Repuesto</th>
+                        <th>Total</th>
+                    </tr>
+                    @for (int i = 0; i < Model.TodaysClosings.Count(); i++)
+                    {
+                        <tr>
+                            <td>@Model.TodaysClosings[i].Name, @Model.TodaysClosings[i].Cost</td>
+                            <td>@Model.PreviousClosingNumbers[i]</td>
+                            <td>@Model.TodaysClosings[i].AmountInStorage</td>
+                            <td>@Model.TodaysClosings[i].Room1</td>
+                            <td>@Model.TodaysClosings[i].Room2</td>
+                            <td>@Model.TodaysClosings[i].Room3</td>
+                            <td>@Model.TodaysClosings[i].ConsuptionSincePreviuosClosing</td>
+                            <td>@Model.TodaysClosings[i].Replenished</td>
+                            <td>@Model.TodaysClosings[i].TotalAmount</td>
+
+                        </tr>
+
+                        @*@Html.HiddenFor(dcvm => dcvm.TodaysClosings[i].Name)
+                            @Html.HiddenFor(dcvm => dcvm.TodaysClosings[i].Cost)
+                            @Html.HiddenFor(dcvm => dcvm.TodaysClosings[i].AmountInStorage)
+                            @Html.HiddenFor(dcvm => dcvm.TodaysClosings[i].Room1)
+                            @Html.HiddenFor(dcvm => dcvm.TodaysClosings[i].Room2)
+                            @Html.HiddenFor(dcvm => dcvm.TodaysClosings[i].Room3)
+                            @Html.HiddenFor(dcvm => dcvm.TodaysClosings[i].TotalAmount)
+                            @Html.HiddenFor(dcvm => dcvm.TodaysClosings[i].ConsuptionSincePreviuosClosing)
+                            @Html.HiddenFor(dcvm => dcvm.TodaysClosings[i].Replenished)*@
+                    }
+                </table>
+                @if (Model.Date != null)
+                {
+                    Model.DateTicks = Model.Date.Ticks;
+                    Model.PreviousClosingTicks = Model.PreviousClosingDate.Ticks;
+                }
+
+                @Html.HiddenFor(dcvm => dcvm.DateTicks)
+                @Html.HiddenFor(dcvm => dcvm.PreviousClosingTicks)
+            </form>
+        </div>
+        <div class="card-footer d-flex">
+            <button type="button" class="mb-0" data-toggle="modal" data-target="#rmpmodal">Reportar faltante</button>
+            <button type="button" class="mb-0 ml-2" onclick="finishDailyClosing()">Guardar</button>
+            <button type="button" class="mb-0 ml-auto" onclick="location.pathname='/DailyClosing'">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+@if (Model.MissingProducts.Count() > 0)
+{
+    <div class=" col-lg-8 mx-auto">
+        @*esto lleva un id(abajo si esta)*@
+    <div class="card">
+        <div class="card-header">Pendiente a reponer:</div>
+        <div class="card-body">
+            <table class="table table-bordered" id="missingsTable">
+                <tr>
+                    <th>Producto</th>
+                    <th>Faltante</th>
+                    <th> </th>
+                </tr>
+                @foreach (var product in Model.MissingProducts)
+                {
+                    <tr>
+                        <td>@product.Name, @product.Cost</td>
+                        <td>@product.Amount</td>
+                        <td>
+                            <input type="button" onclick="restore(this)" value="Reponer" />
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+}
+else
+{
+<div class="col-lg-8 mx-auto mydisplay" id="missingsDiv">
+    <div class="card">
+        <div class="card-header">Pendiente a reponer:</div>
+        <div class="card-body">
+            <table class="table table-bordered" id="missingsTable">
+                <tr>
+                    <th>Producto</th>
+                    <th>Faltante</th>
+                    <th> </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+}
+
+<div class="col-lg-8 mx-auto mydisplay" id="todaysRepDiv">
+    <div class="card">
+        <div class="card-header">Faltantes del día:</div>
+        <div class="card-body">
+            <table class="table table-bordered" id="todaysReportsTable">
+                <tr>
+                    <th>Producto</th>
+                    <th>Faltante</th>
+                    <th> </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-lg-8 mx-auto mydisplay" id="repositionDiv">
+    <div class="card">
+        <div class="card-header">Reposiciones de faltantes:</div>
+        <div class="card-body">
+            <table class="table table-bordered" id="repositionTable">
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Por pago</th>
+                    <th> </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="rmpmodal" tabindex="-1" role="dialog" aria-labelledby="rmpModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="rmpModalLongTitle">Reporte de faltante</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="">
+                    <div class="container">
+                        <div class="row form-group">
+                            <label for="MissingProductInput">Seleccione una producto</label>
+                            <div class="input-group">
+                                <select id="MissingProductInput" class="dropdown" style="width: 100%">
+                                    <option value="0"></option>
+                                    @foreach (var item in Model.Products)
+                                    {
+                                        var text = @item.Name + ", " + @item.Cost;
+                                        <option value="text">@text</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class=" form-group">
+                        @Html.LabelFor(clvm => clvm.MissingProduct.Amount)
+                        @Html.TextBoxFor(clvm => clvm.MissingProduct.Amount, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(clvm => clvm.MissingProduct.Amount)
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" @*data-dismiss="modal"*@ onclick="reportProduct()">Reportar</button>
+                <button type="button" class="red-button" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="restoremodal" tabindex="-1" role="dialog" aria-labelledby="rModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="rModalLongTitle">Reposición de faltante:</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="">
+                    @*<div class="container">
+                            <div class="row form-group">
+                                <label for="MissingProductInput">Cantidad:</label>
+                                <input type="number" name="repositionAmount" id="repositionAmount" />
+                            </div>
+                        </div>
+                        @Html.RadioButtonFor(clvm => clvm.MissingProduct.Amount, 1)
+
+                        <input id="12" type="radio" name="amount" value="12" />
+                        <label for="12">Doce</label>
+                        <input id="15" type="radio" name="amount" value="15" />
+                        <label for="15">Quince</label>
+
+                        <div class=" form-group">
+                            @Html.LabelFor(clvm => clvm.MissingProduct.Amount)
+                            @Html.RadioButtonFor(clvm => clvm.MissingProduct.Amount, 1, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(clvm => clvm.MissingProduct.Amount)
+                        </div>
+
+                        <div class=" form-group">
+                            @Html.LabelFor(clvm => clvm.MissingProduct.Amount)
+                            @Html.RadioButtonFor(clvm => clvm.MissingProduct.Amount, 2, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(clvm => clvm.MissingProduct.Amount)
+                        </div>
+                        <div class=" form-group">
+                            @Html.LabelFor(r => r.Repositions[0].Paid)
+                            @Html.DropDownListFor(r => r.Repositions[0].Paid, new SelectList(new List<bool>(true, false), "RoomId", "RoomId"), "", new { @class = "form-control" })
+                        </div>*@
+                    @*<h4 id="productToRestore">Producto</h4>
+                        <h4 id="missingAmount">Por reponer</h4>*@
+                    <div class=" form-group mb-3">
+                        @Html.LabelFor(r => r.RepositionRecord.Amount)
+                        @Html.TextBoxFor(r => r.RepositionRecord.Amount, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(r => r.RepositionRecord.Amount)
+                    </div>
+
+                    <div class=" checkbox">
+                        @Html.LabelFor(r => r.RepositionRecord.Paid)
+                        @Html.CheckBoxFor(r => r.RepositionRecord.Paid)
+                        @Html.ValidationMessageFor(r => r.RepositionRecord.Paid)
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" onclick="effectRestore()">Continuar</button>
+                <button type="button" class="red-button" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var nReports = 0;
+    var nRepositions = 0;
+    var productsDict = {};
+    var missProductsDict = {};
+
+    function setProductsDictionary(table, dict) {
+        for (var i = 1; i < table.rows.length; i++) {
+            dict[table.rows[i].cells[0].innerHTML] = i
+        }
+    }
+
+    function isEmpty(object) {
+        for (var key in object) {
+            if (object.hasOwnProperty(key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function removeRow(btn) {//para que funcione las tablas que lo utilicen deben tener product en la col0 y amount en 1
+        var table = btn.parentNode.parentNode.parentNode.parentNode;
+        var tableId = table.id;
+        var index = btn.parentNode.parentNode.rowIndex;
+        var product = table.rows[index].cells[0].innerHTML;
+        var amount = table.rows[index].cells[1].innerHTML;
+
+        if (tableId == "todaysReportsTable") {
+            var reportsTable = document.getElementById("missingsTable");
+            if (parseFloat(reportsTable.rows[missProductsDict[product]].cells[1].innerHTML) - amount < 0) {
+                alert("No se puede eliminar un reporte de faltante que ya ha sido parcial o totalmente repuesto");
+            }
+            var tablediv = document.getElementById("todaysRepDiv");
+            var invertAmountIsRep = false;
+            updateMainTable(product, amount, invertAmountIsRep, invertAmountIsRep);
+        }
+        else {//repositionTable
+            var tablediv = document.getElementById("repositionDiv");
+            var invertAmountIsRep = true;
+            var repType = table.rows[index].cells[2].innerHTML;
+            if (repType == "No") {
+                updateMainTable(product, amount, invertAmountIsRep, invertAmountIsRep);
+            }
+        }
+
+        updateMissingsTable(product, amount, !invertAmountIsRep);
+
+        table.deleteRow(index);
+        if (table.rows.length === 1) {
+            tablediv.style.display = "none";
+        }
+    }
+
+    function reportProduct() {
+        var mainTable = document.getElementById("mainTable");
+
+        if (isEmpty(productsDict)) {
+            setProductsDictionary(mainTable, productsDict);
+        }
+
+        var dropDownList = document.getElementById("MissingProductInput");
+        var selectedText = dropDownList.options[dropDownList.selectedIndex].text;
+        var amount = document.getElementById("MissingProduct_Amount").value;
+        var table = document.getElementById("todaysReportsTable");
+
+        if (!validateReport(selectedText, amount, table)) {
+            return;
+        }
+
+        updateTodaysReportsTable(selectedText, amount, table);
+
+        updateMainTable(selectedText, amount, false, true);//revisar
+
+        updateMissingsTable(selectedText, amount);
+
+        document.getElementById("MissingProduct_Amount").value = 0
+        dropDownList.selectedIndex = 0;
+        $('#rmpmodal').modal('hide');
+        $(".modal-backdrop").remove();
+    }
+
+    function validateReport(selectedText, amount, table) {
+        if (selectedText == "") {
+            alert("Debe especificar el producto en falta");
+            return false;
+        }
+
+        var mainTable = document.getElementById("mainTable");
+        var available = parseFloat(mainTable.rows[productsDict[selectedText]].cells[8].innerHTML);
+        if (isNaN(amount) || amount <= 0 || amount == "" || amount > available) {
+            alert("Debe especificar una cantidad positiva y menor que la disponible en almacén");
+            return false;
+        }
+
+        for (var i = 1, row; row = table.rows[i]; i++) {
+            col = row.cells[0].innerHTML;
+            if (selectedText == col) {
+                alert("Producto ya reportado en el cierre de hoy");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function updateTodaysReportsTable(selectedText, amount, table) {
+        var row = table.insertRow(-1);
+        row.id = nReports;
+        nReports += 1;
+
+        var productCell = row.insertCell(0);
+        var missingCell = row.insertCell(1);
+        var removeCell = row.insertCell(2);
+
+        productCell.innerHTML = selectedText;
+        missingCell.innerHTML = amount;
+
+        var button = document.createElement("INPUT");
+        button.setAttribute("type", "button");
+        button.setAttribute("value", "Eliminar");
+        button.setAttribute("onclick", "removeRow(this)");
+        removeCell.appendChild(button);
+
+        tablediv = document.getElementById("todaysRepDiv");
+        //if (tablediv.style.display === "") {
+        tablediv.style.display = "block";
+        //}
+    }
+
+    function updateMissingsTable(product, amount, isReposition = false) {
+        var table = document.getElementById("missingsTable");
+        if (isReposition) {
+            amount = -amount;
+        }
+
+        if (isEmpty(missProductsDict)) {
+            setProductsDictionary(table, missProductsDict);
+        }
+
+        var index = missProductsDict[product];
+        if (index == undefined) {
+            missProductsDict[product] = table.rows.length;
+            index = missProductsDict[product];
+
+            var row = table.insertRow(-1);
+            var cell = row.insertCell(0);
+            cell.innerHTML = product;
+
+            var cell = row.insertCell(1);
+            cell.innerHTML = amount;
+
+            var restoreCell = row.insertCell(2);
+            var restoreButton = document.createElement("INPUT");
+            restoreButton.setAttribute("type", "button");
+            restoreButton.setAttribute("value", "Reponer");
+            restoreButton.setAttribute("onclick", "restore(this)");
+            restoreCell.appendChild(restoreButton);
+        }
+        else {
+            var missing = parseFloat(table.rows[index].cells[1].innerHTML) + parseFloat(amount);
+            table.rows[index].cells[1].innerHTML = missing;
+            var button = table.rows[index].cells[2].children[0];
+            if (isReposition && missing == 0) {
+                button.disabled = true;
+            }
+            else {
+                button.disabled = false;
+            }
+        }
+
+        tablediv = document.getElementById("missingsDiv");
+        if (tablediv != undefined) {
+            tablediv.style.display = "block";
+        }
+    }
+
+    function restore(btn) {
+        var product = btn.parentNode.parentNode.cells[0].innerHTML;
+        document.getElementById('rModalLongTitle').innerHTML = "Reposición de " + product;
+        $('#restoremodal').modal()
+    }
+
+    function effectRestore() {
+        var repositionAmount = document.getElementById('RepositionRecord_Amount').value;
+        var title = document.getElementById('rModalLongTitle').innerHTML;
+        var product = title.split("Reposición de ")[1];
+        var reptype = document.getElementById('RepositionRecord_Paid').checked;
+        var table = document.getElementById("repositionTable");
+        var missingsTable = document.getElementById("missingsTable");
+
+        if (!validateRepModal(product, repositionAmount, table, missingsTable)) {
+            return;
+        }
+
+        updateRepositionTable(product, repositionAmount, reptype, table);
+
+        if (!reptype) {
+            updateMainTable(product, repositionAmount, true, false);
+        }
+
+        updateMissingsTable(product, repositionAmount, true);
+
+        $('#restoremodal').modal('hide');
+        $(".modal-backdrop").remove();
+    }
+
+    function validateRepModal(product, repositionAmount, table, missingsTable) {
+        console.log("validatingReport");
+
+        if (isEmpty(missProductsDict)) {
+            setProductsDictionary(missingsTable, missProductsDict);
+        }
+        console.log(missProductsDict);
+        var missing = parseFloat(missingsTable.rows[missProductsDict[product]].cells[1].innerHTML);
+
+        if (isNaN(repositionAmount) || repositionAmount <= 0 || repositionAmount > missing) {
+            alert("Debe especificar una cantidad a reponer positiva y menor que la cantidad reportada como faltante");
+            return false;
+        }
+
+        for (var i = 1, row; row = table.rows[i]; i++) {
+            col = row.cells[0].innerHTML;
+            if (product == col) {
+                alert("Ya se ha realizado una reposición de este producto durante este cierre");
+                return false;//esto no hace falta si se hace update
+            }
+        }
+
+        return true;
+    }
+
+    function updateRepositionTable(product, repositionAmount, reptype, table) {
+        var mainTable = document.getElementById("mainTable");
+
+        if (isEmpty(productsDict)) {
+            setProductsDictionary(mainTable, productsDict);
+        }
+
+        var row = table.insertRow(-1);
+        row.id = nRepositions;
+        nRepositions += 1;
+
+        var productCell = row.insertCell(0);
+        var repositionCell = row.insertCell(1);
+        var repTypeCell = row.insertCell(2);
+        var removeCell = row.insertCell(3);
+
+        productCell.innerHTML = product;
+        repositionCell.innerHTML = repositionAmount;
+        if (reptype == true) {
+            repTypeCell.innerHTML = "Sí";
+        }
+        else {
+            repTypeCell.innerHTML = "No";
+        }
+        var button = document.createElement("INPUT");
+        button.setAttribute("type", "button");
+        button.setAttribute("value", "Deshacer");
+        button.setAttribute("onclick", "removeRow(this)");
+        removeCell.appendChild(button);
+
+        document.getElementById("RepositionRecord_Amount").value = 0;
+        document.getElementById('RepositionRecord_Paid').checked = false;
+
+        tablediv = document.getElementById("repositionDiv");
+        tablediv.style.display = "block";
+    }
+
+    function updateMainTable(product, repositionAmount, isReposition, invertAmount = false) {
+        var mainTable = document.getElementById("mainTable");
+        var index = productsDict[product];
+        if (index == undefined) {
+            productsDict[product] = mainTable.rows.length;
+            index = productsDict[product];
+
+            var row = mainTable.insertRow(-1);
+            var cell = row.insertCell(0);
+            cell.innerHTML = product;
+            for (var i = 1; i < 9; i++) {
+                var cell = row.insertCell(i);
+                cell.innerHTML = 0;
+            }
+        }
+
+        if (invertAmount) {
+            repositionAmount = -repositionAmount;
+        }
+        if (isReposition) {
+            var repositions = parseFloat(mainTable.rows[index].cells[7].innerHTML) + parseFloat(repositionAmount);
+            mainTable.rows[index].cells[7].innerHTML = repositions;
+        }
+
+        var stock = parseFloat(mainTable.rows[index].cells[2].innerHTML) + parseFloat(repositionAmount);
+        var total = parseFloat(mainTable.rows[index].cells[8].innerHTML) + parseFloat(repositionAmount);
+        mainTable.rows[index].cells[2].innerHTML = stock;
+        mainTable.rows[index].cells[8].innerHTML = total;//si total es cero y el previous tambien eliminar row
+    }
+
+    function finishDailyClosing() {
+        var form = document.getElementById('dcForm');
+        saveReports(form);
+        saveRepositions(form);
+        saveClosingRows(form);
+        form.submit();
+    }
+
+    function saveReports(form) {
+        var table = document.getElementById('todaysReportsTable');
+
+        for (var i = 1, row; row = table.rows[i]; i++) {
+            var index = i - 1;
+            var row0 = row.cells[0].innerHTML.split(", ");
+
+            for (var j = 0, col; col = row.cells[j]; j++) {
+                var input = document.createElement("INPUT");
+                input.setAttribute("type", "hidden");
+                if (j == 0) {
+                    input.setAttribute("value", row0[0]);
+
+                    input.setAttribute("name", "MissingProductsToReport[" + index + "].Name");
+                }
+                else if (j == 1) {
+                    input.setAttribute("value", col.innerHTML);
+
+                    input.setAttribute("name", "MissingProductsToReport[" + index + "].Amount");
+                }
+                else if (j == 2) {
+                    input.setAttribute("value", row0[1]);
+
+                    input.setAttribute("name", "MissingProductsToReport[" + index + "].Cost");
+                }
+                else {
+                    continue;
+                }
+                form.appendChild(input);
+            }
+        }
+    }
+
+    function saveRepositions(form) {
+        var table = document.getElementById('repositionTable');
+
+        for (var i = 1, row; row = table.rows[i]; i++) {
+            var index = i - 1;
+            var row0 = row.cells[0].innerHTML.split(", ");
+
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", row0[0]);
+            input.setAttribute("name", "Repositions[" + index + "].Name");
+            form.appendChild(input);
+
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", row0[1]);
+            input.setAttribute("name", "Repositions[" + index + "].Cost");
+            form.appendChild(input);
+
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", row.cells[1].innerHTML);
+            input.setAttribute("name", "Repositions[" + index + "].Amount");
+            form.appendChild(input);
+
+            if (row.cells[2].innerHTML == "No") {
+                var paid = false;
+            }
+            else {
+                var paid = true;
+            }
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", paid);
+            input.setAttribute("name", "Repositions[" + index + "].Paid");
+            form.appendChild(input);
+        }
+    }
+
+    function saveClosingRows(form) {
+        var table = document.getElementById('mainTable');
+
+        //console.log("saving todays closing rows");
+        for (var i = 1, row; row = table.rows[i]; i++) {
+            var index = i - 1;
+            var row0 = row.cells[0].innerHTML.split(", ");
+            //guardar tambien lo del dia anterior
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", row0[0]);
+            input.setAttribute("name", "TodaysClosings[" + index + "].Name");
+            form.appendChild(input);
+
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", row0[1]);
+            input.setAttribute("name", "TodaysClosings[" + index + "].Cost");
+            form.appendChild(input);
+
+            //console.log("in storage");
+            //console.log(row.cells[1].innerHTML);
+            //console.log(parseFloat(row.cells[1].innerHTML));
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", row.cells[2].innerHTML);
+            input.setAttribute("name", "TodaysClosings[" + index + "].AmountInStorage");
+            form.appendChild(input);
+
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", row.cells[3].innerHTML);
+            input.setAttribute("name", "TodaysClosings[" + index + "].Room1");
+            form.appendChild(input);
+
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", row.cells[4].innerHTML);
+            input.setAttribute("name", "TodaysClosings[" + index + "].Room2");
+            form.appendChild(input);
+
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", row.cells[5].innerHTML);
+            input.setAttribute("name", "TodaysClosings[" + index + "].Room3");
+            form.appendChild(input);
+
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", row.cells[6].innerHTML);
+            input.setAttribute("name", "TodaysClosings[" + index + "].ConsuptionSincePreviuosClosing");
+            form.appendChild(input);
+
+            //console.log("replenished");
+            //console.log(row.cells[6].innerHTML);
+            //console.log(parseFloat(row.cells[6].innerHTML));
+
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", row.cells[7].innerHTML);
+            input.setAttribute("name", "TodaysClosings[" + index + "].Replenished");
+            form.appendChild(input);
+
+            //console.log("total");
+            //console.log(row.cells[7].innerHTML);
+            //console.log(parseFloat(row.cells[7].innerHTML));
+
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("value", row.cells[8].innerHTML);
+            input.setAttribute("name", "TodaysClosings[" + index + "].TotalAmount");
+            form.appendChild(input);
+        }
+    }
+</script>
